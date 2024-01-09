@@ -1,0 +1,20 @@
+// display_functions.h
+
+#ifndef DISPLAY_FUNCTIONS_H
+#define DISPLAY_FUNCTIONS_H
+
+#include "globals.h"  // Include the necessary global header file
+#include <Arduino.h>  // Include Arduino core library for data types and functions
+
+void Draw_TX();
+void Draw_RX();
+void Clear_Scr();
+void BT_Conn_Status(const char* read_Conn_Status);
+void show_Meters();
+void show_Mode(uint8_t newModMode, uint8_t newRXfilter);
+void user_TXPWR(unsigned short getTXPWR);
+void set_LCD_Curennt_frequenz(unsigned long frequency);
+void set_LCD_Curennt_RX(unsigned long frequency);
+void set_LCD_Curennt_TX(unsigned long frequency);
+void userPTT(uint8_t newState);
+#endif  // DISPLAY_FUNCTIONS_H
