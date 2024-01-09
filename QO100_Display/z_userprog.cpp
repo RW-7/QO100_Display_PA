@@ -14,8 +14,10 @@ in all files
 */
 #include "z_userprog.h"
 #include "globals.h"
+#include "defines.h"
 #include "pa_settings.h"
 #include "FrequencyDigits.h"
+#include "Display_functionen.h"
 // IMPORTANT!
 
 // Deklaration der globalen Variablen aus der globals.h-Datei
@@ -23,7 +25,6 @@ extern boolean HF_ptt_Enable;
 extern boolean VHF_ptt_Enable;
 extern boolean UHF_ptt_Enable;
 extern int bandvoltage;
-extern const int C_RELAIS;
 extern int brightness;
 extern const int ledChannel;
 extern int corrFact;
@@ -128,8 +129,8 @@ void userFrequency(unsigned long newFrequency) {
     set_PAbands(G_frequency);
   #endif
   
-    set_LCD_Curennt_frequenz(G_frequency);
-
+    set_LCD_Curennt_RX(G_frequency);
+    
   if (SET_QO100!=G_QO100 and G_QO100==1){
     #ifdef debug
       Serial.print ("userFrequency:"); Serial.println (G_frequency);
@@ -142,11 +143,14 @@ void userFrequency(unsigned long newFrequency) {
   } 
   // if RX QO100 // Set Band & Mod
   if (G_RXTX==0) {
-    G_SPLIT_frequency = G_frequency + OFFSET_SPLIT_RXTX;
+
+    G_SPLIT_frequency = G_frequency + OFFSET_SPLIT_RXTX; // TX Frequenz für Upconverter subVFO
+    set_LCD_Curennt_TX(G_SPLIT_frequency);
     G_Dipslay_RX_frequency = G_frequency + OFFSET_Dipslay_RX;
-    set_LCD_Curennt_RX(G_Dipslay_RX_frequency);
+    set_LCD_SAT_RX(G_Dipslay_RX_frequency);
     G_Dipslay_TX_frequency = G_SPLIT_frequency + OFFSET_Dipslay_TX;
-    set_LCD_Curennt_TX(G_Dipslay_TX_frequency);
+    set_LCD_SAT_TX(G_Dipslay_TX_frequency);
+
     FrequencyDigits freqDigits = FrequencyDigits(G_SPLIT_frequency);
     #ifdef debug
     Serial.println ("RX");

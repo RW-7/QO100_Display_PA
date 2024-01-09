@@ -31,7 +31,7 @@ radioOnOff_t G_radioOn = RADIO_NDEF; // Initially don't know whether the radio i
 bool G_RXTX = 0;                     // 0 == RX; 1 == TX on
 unsigned long G_frequency = 0;        // Operating frequency in [Hz]
 unsigned long G_SPLIT_frequency = 0;          // Operating frequency in [Hz]
-unsigned long G_Dipslay_RX_frequency = 0;      // Operating frequency in [Hz]
+unsigned long long G_Dipslay_RX_frequency = 0;      // Operating frequency in [Hz]
 unsigned long G_Dipslay_TX_frequency = 0;      // Operating frequency in [Hz]
 uint8_t G_Mod = MOD_NDEF;             // Modulation mode (USB, LSB, etc...)
 uint8_t G_RXfilter = FIL_NDEF;        // RX filter in use (Fil1, Fil2, Fil3);
@@ -40,13 +40,21 @@ unsigned short G_TXPWR = 0;          // TX Power (0..255 = 0-10W)
 bool G_QO100 = 1;             // 0 == OFF; 1 == on
 bool G_QO100_BAND_RX = 2;     // 2 == 2m Band RX;
 bool SET_QO100 = 1;           // 0 == RX; 1 == TX on
-
+int G_Sat = 0;
+int G_Split = 0;
+int G_ic705 = 0;
 // Weitere globale Variablen hier hinzufügen, falls erforderlich
 
 // Timer-Variablen -------------------------------------------------------------
 uint16_t t_curr_lp;       // Aktuelle Zeit der aktuellen Baseloop (am Anfang) für Berechnungen
 uint16_t ts_last_lp;      // Zeitstempel - wird am Ende jeder Baseloop-Ausführung aktualisiert
-
+// Touch
+int buttonX[3] = {30, 110, 190};
+int buttonY = 260;
+int buttonWidth = 70;
+int buttonHeight = 40;
+bool buttonPressed[3] = {false, false, false};
+int buttonSpacing = 0;
 // WLAN-spezifische Variablen
 #ifdef WIFI
 #include <WiFi.h>
@@ -73,5 +81,7 @@ uint8_t civAddr = CIV_ADDR_7300;
 uint8_t civAddr = CIV_ADDR_9700;
 #endif
 uint8_t G_currentBand;
-
+uint8_t G_subVFOSplitBand;  // TX Split
+uint8_t G_currentDownBand; // RX Upconverter
+uint8_t G_subVFOUPBand; //TX Upconverter
 // Weitere globale Variablen hier hinzufügen, falls benötigt

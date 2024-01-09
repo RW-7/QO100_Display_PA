@@ -33,7 +33,7 @@ void setModMode(radioModMode_t newModMode, radioFilter_t newRXfilter);
 
 void CIV_getProcessAnswers();
 void CIV_sendCmds();
-void userFrequency(unsigned long newFrequency);
+//void userFrequency(unsigned long newFrequency);
 constexpr uint8_t getVFOQRGByte(uint8_t highDigit, uint8_t lowDigit) {
     return (0x00 | (highDigit << 4) | lowDigit);
 }

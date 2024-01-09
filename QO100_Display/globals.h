@@ -68,7 +68,7 @@ extern radioOnOff_t G_radioOn;
 extern bool G_RXTX;
 extern unsigned long G_frequency;
 extern unsigned long G_SPLIT_frequency;
-extern unsigned long G_Dipslay_RX_frequency;
+extern unsigned long long G_Dipslay_RX_frequency;
 extern unsigned long G_Dipslay_TX_frequency;
 extern uint8_t G_Mod;
 extern uint8_t G_RXfilter;
@@ -76,7 +76,9 @@ extern unsigned short G_TXPWR;
 extern bool G_QO100;
 extern bool G_QO100_BAND_RX;
 extern bool SET_QO100;
-
+extern int G_Sat;
+extern int G_Split;
+extern int G_ic705;
 // Weitere globale Variablen hier hinzufügen, falls erforderlich
 
 // Timer-Variablen
@@ -99,12 +101,17 @@ extern bool UHF_ptt_Enable;
 extern const int freq;
 extern const int ledChannel;
 extern const int resolution;
-
-
-
+extern int buttonX[3];
+extern int buttonY;
+extern int buttonWidth;
+extern int buttonHeight;
+extern int buttonSpacing;
+extern bool buttonPressed[3];
 extern uint8_t civAddr;
 extern uint8_t G_currentBand;
-
+extern uint8_t G_subVFOSplitBand;
+extern uint8_t G_currentDownBand;
+extern uint8_t G_subVFOUPBand;
 // Weitere globale Variablen hier hinzufügen, falls benötigt
 
 #endif // GLOBALS_H

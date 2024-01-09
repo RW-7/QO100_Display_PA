@@ -43,12 +43,6 @@ Hinweis: Bitte seien Sie vorsichtig, wenn Sie RX/TX-Informationen als PTT für P
 #include <cstdint> 
 #include "z_userprog.h"
 
-
-
-// Module-weite Variablen --------------------------------------------------------
-
-
-
 /*
 Parameter der Struktur CIVresult_t:
 .retVal // Zusammenfassung/Ergebnis der Befehlsverarbeitung wie CIV_OK, CIV_NOK, ...
@@ -73,23 +67,7 @@ Mögliche Rückgabewerte (retVal_t):
    ... siehe auch CIVmaster.h ...
 */
 
-// Einige Steuerungsvariablen/Timer:
-
-// Mit diesen Zeitstempeln können Zeitdifferenzen von bis zu 65535 ms == 1min 5,5sec maximal verarbeitet werden
-
 // uint16_t wird hier verwendet, um RAM-Platz zu sparen (wegen der kleinen Atmel-Prozessoren)
-
-
-
-// Globale Variablen der Funkdaten ---------------------------- -
-// Im Allgemeinen werden die Anfangswerte der Reihe nach auf einen undefinierten Zustand gesetzt
-// um notwendige Aktionen zunächst nach der Verbindung mit dem Radio zu erzwingen
-
-
-
-
-
-
 
 void setup() {
   // Initialisieren der seriellen Schnittstelle (für Debug-Nachrichten)
