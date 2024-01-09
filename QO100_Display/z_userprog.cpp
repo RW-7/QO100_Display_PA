@@ -14,8 +14,10 @@ in all files
 */
 #include "z_userprog.h"
 #include "globals.h"
+#include "defines.h"
 #include "pa_settings.h"
 #include "FrequencyDigits.h"
+#include "Display_functionen.h"
 // IMPORTANT!
 
 // Deklaration der globalen Variablen aus der globals.h-Datei
@@ -23,7 +25,6 @@ extern boolean HF_ptt_Enable;
 extern boolean VHF_ptt_Enable;
 extern boolean UHF_ptt_Enable;
 extern int bandvoltage;
-extern const int C_RELAIS;
 extern int brightness;
 extern const int ledChannel;
 extern int corrFact;

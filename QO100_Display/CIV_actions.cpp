@@ -11,6 +11,7 @@ are down at the bottom of this file!
 #include "globals.h"
 #include "CIV_actions.h"
 #include "Display_functionen.h"
+#include "z_userprog.h"
 #include <CIVmaster.h> // CIVcmds.h wird automatisch zusätzlich eingebunden
 
 // Definition der inline-Funktion
@@ -90,7 +91,7 @@ void  setFrequency(unsigned long newFrequency) {
   if (G_frequency!=newFrequency){
     G_frequency=newFrequency;
 
-    void userFrequency(unsigned long newFrequency);  // call into z_userprog.ino ...
+    userFrequency(newFrequency);  // call into z_userprog.ino ...
     
     #ifdef debug
       Serial.print("Freq:"); Serial.println(newFrequency);

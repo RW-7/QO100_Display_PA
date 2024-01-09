@@ -74,8 +74,7 @@
 #define PTTpinVHF 33  //PTT out VHF
 #define PTTpinUHF 32  //PTT out UHF
 #define LED 27       //Band voltage
-#define C_RELAIS_PIN 25 //Coax relais HF / VHF-UHF
-extern const int C_RELAIS;
+#define C_RELAIS 25 //Coax relais HF / VHF-UHF
 #define NUM_BANDS 13   /* Number of Bands (depending on the radio) */
 // repetition rate of the base loop in ms, i.e. every 10ms an action can/will be taken
 #define BASELOOP_TICK 10

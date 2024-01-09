@@ -39,12 +39,10 @@ void init_TFT(void)
     digitalWrite(TFT_BL, HIGH);              // switch backlight on
     tft.fillScreen(BLACK);
     tft.setRotation(3);
-    tft.fillRoundRect(0, 0, tft.width(), 30, 5, MAROON);   // background for screen title
-    tft.drawRoundRect(0, 0, tft.width(), 30, 5, WHITE);    //with white border.
+    //tft.fillRoundRect(0, 0, tft.width(), 30, 5, MAROON);   // background for screen title
+    tft.drawRoundRect(0, 0, tft.width(), 35, 5, WHITE);    //with white border.
     tft.setTextSize(2);                  //for default Font only.Font is later changed.
     tft.setTextColor(YELLOW);
-    tft.setCursor(10, 7);                //top line
-    tft.drawString(String(NAME) + " V" + String(VERSION) + " by " + String(AUTHOR), 160, 160);
 
    // tft.setTextColor(WHITE);            //white from now on
 

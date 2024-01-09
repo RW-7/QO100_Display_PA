@@ -10,27 +10,36 @@
 extern bool HF_ptt_Enable;
 extern bool VHF_ptt_Enable;
 extern bool UHF_ptt_Enable;
-extern int bandvoltage;
-extern const int C_RELAIS;
-extern int brightness;
-extern const int ledChannel;
-extern int corrFact;
 extern TFT_eSPI tft;
 
 void Draw_TX() {
-  tft.fillRoundRect(190, 80, 50, 55, 10, RED);
-  tft.drawLine(215, 88, 215, 128, WHITE);
-  tft.drawLine(194, 88, 215, 103, WHITE);
-  tft.drawLine(235, 88, 215, 103, WHITE);
+  //TX 
+  // tft.fillRoundRect(190, 80, 50, 55, 10, RED);
+  // tft.drawLine(215, 88, 215, 128, WHITE);
+  // tft.drawLine(194, 88, 215, 103, WHITE);
+  // tft.drawLine(235, 88, 215, 103, WHITE);
+  //TX Topline
+  tft.setTextSize(1);
+  tft.fillRect(2, 1, 65, 35, BLACK); //debug setting background
+   tft.setTextColor(RED);
+  tft.setCursor(3, 7);
+    tft.print("TX");
   // tft.print("Tx");
 }
 
 void Draw_RX() {
-  tft.fillRoundRect(190, 80, 50, 55, 10, GREEN);
-  tft.fillRect(197, 90, 15, 30, BLACK);
-  tft.drawLine(232, 85, 232, 125, BLACK);
-  tft.drawLine(232, 85, 212, 90, BLACK);
-  tft.drawLine(232, 125, 212, 120, BLACK);
+  
+  // tft.fillRoundRect(190, 80, 50, 55, 10, GREEN);
+  // tft.fillRect(197, 90, 15, 30, BLACK);
+  // tft.drawLine(232, 85, 232, 125, BLACK);
+  // tft.drawLine(232, 85, 212, 90, BLACK);
+  // tft.drawLine(232, 125, 212, 120, BLACK);
+  // RX Topline
+  tft.fillRect(1, 1, 65, 35, BLACK); //debug setting background
+  tft.setTextSize(1);
+   tft.setTextColor(WHITE);
+   tft.setCursor(3, 7);
+    tft.print("RX");
   // tft.print("Rx");
 }
 
@@ -45,16 +54,19 @@ void BT_Conn_Status(const char* read_Conn_Status) {
   tft.setTextSize(2);
 
   if (read_Conn_Status == Conn_Yes) {
-    tft.fillRect(80, 1, 85, 28, MAROON);  // productive setting background
+    //tft.fillRect(80, 1, 85, 28, MAROON);  // productive setting background
     tft.setTextColor(GREEN);
     tft.setCursor(80, 7);
     tft.print("BT CAT");
     Clear_Scr();
     Draw_RX();
   } else {
-    tft.fillRect(80, 1, 155, 28, MAROON);  // productive setting background
-    tft.setTextColor(WHITE);
+    //tft.fillRect(80, 1, 155, 28, MAROON);  // productive setting background
+    tft.setTextColor(RED);
     tft.setCursor(80, 7);
+    tft.print("BT CAT");
+    tft.setTextColor(WHITE);
+    tft.setCursor(170, 7);
     tft.print("OFFLINE");
     Clear_Scr();  // clear screen
     tft.setCursor(0, 40);
@@ -79,17 +91,30 @@ void show_Meters(void) {
 }
 
 void show_Mode(uint8_t newModMode, uint8_t newRXfilter) {
+  // tft.setFreeFont(NULL);  // Set font to GLCD
+  // // tft.setFreeFont(&FreeSans9pt7b);
+  // // tft.setFreeFont(&Tiny3x3a2pt7b);
+  // tft.fillRect(105, 80, 85, 55, BLACK);  //erase previous freq   vk3pe x,y,width,height,colour 10,40,137,40
+  // tft.drawRoundRect(105, 80, 85, 55, 5, WHITE);
+  // tft.setTextSize(2);
+  // tft.setCursor(115, 90);
+  // tft.setTextColor(YELLOW);
+  // tft.print(modModeStr[newModMode]);
+  // tft.setCursor(115, 115);
+  // tft.print(FilStr[newRXfilter]);
+
   tft.setFreeFont(NULL);  // Set font to GLCD
   // tft.setFreeFont(&FreeSans9pt7b);
   // tft.setFreeFont(&Tiny3x3a2pt7b);
-  tft.fillRect(105, 80, 85, 55, BLACK);  //erase previous freq   vk3pe x,y,width,height,colour 10,40,137,40
-  tft.drawRoundRect(105, 80, 85, 55, 5, WHITE);
+  tft.fillRect(251, 7, 85, 30, BLACK);  //erase previous freq   vk3pe x,y,width,height,colour 10,40,137,40
   tft.setTextSize(2);
-  tft.setCursor(115, 90);
+  tft.setCursor(251, 7);
   tft.setTextColor(YELLOW);
   tft.print(modModeStr[newModMode]);
-  tft.setCursor(115, 115);
+  tft.setCursor(300, 7);
   tft.print(FilStr[newRXfilter]);
+
+
 }
 
 void user_TXPWR(unsigned short getTXPWR) {
@@ -98,8 +123,8 @@ void user_TXPWR(unsigned short getTXPWR) {
 
   tft.setFreeFont(NULL);  // Set default font
   tft.setTextSize(2);
-  tft.fillRect(170, 1, 65, 28, MAROON);  // productive setting background
-  // tft.fillRect(170, 1, 65, 28, BLACK); //debug setting background
+  //tft.fillRect(170, 1, 65, 28, MAROON);  // productive setting background
+  tft.fillRect(170, 1, 80, 28, BLACK); //debug setting background
   tft.setTextColor(WHITE);  // print TXPWR white if output power < 4W
   if (getTXPWR > 101) {
     tft.setTextColor(YELLOW);  // print TXPWR yellow if out > 4W for attention of PA max. input power
