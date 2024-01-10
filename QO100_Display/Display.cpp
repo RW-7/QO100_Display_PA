@@ -12,7 +12,7 @@ TFT_eSPI tft = TFT_eSPI();
 // uint16_t touchX = 0;
 // uint16_t touchY = 0;
 uint16_t touchX, touchY;
-uint16_t calData[5] = { 353, 3568, 269, 3491, 7  };
+uint16_t calData[5] = { 263, 3632, 304, 3568, 1 };
 
 
 //=================================================
@@ -56,7 +56,6 @@ void init_TFT(void)
     #ifdef useTouch
      
     tft.setTouch(calData);
-    
     #endif
   #endif
 }

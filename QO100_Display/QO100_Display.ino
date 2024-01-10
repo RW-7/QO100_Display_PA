@@ -122,6 +122,9 @@ void loop() {
 
     // Wenn Sie Touch-Funktionen implementiert haben
     touchloop();
+    if (touchcalibrate){
+      touch_calibrate();
+    }
 
     // Payload ------------------------------------------------------
     ts_last_lp = t_curr_lp;

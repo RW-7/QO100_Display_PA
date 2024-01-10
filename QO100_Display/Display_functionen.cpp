@@ -12,28 +12,70 @@ extern bool VHF_ptt_Enable;
 extern bool UHF_ptt_Enable;
 extern TFT_eSPI tft;
 
-
-void drawButton(int x, int y, int width, int height, const char* label, bool pressed) {
-  // Hintergrund
-  tft.fillRect(x, y, width, height, pressed ? GREEN : BLACK);
-  
-  for (int i = 0; i < 5; i++) {
-    tft.drawRoundRect(x + i, y + i, width - 2 * i, height - 2 * i, 5 - i, WHITE);
+void drawButton() {  // Erstelle Touch Buttons mit Label 
+int buttonCount = sizeof(buttonX) / sizeof(buttonX[0]);
+  for (int i = 0; i < buttonCount; i++) {
+    tft.drawRoundRect(buttonX[i], buttonY, buttonWidth, buttonHeight, 5, WHITE);    //with white border.
+    tft.setFreeFont(NULL);
+    tft.setTextSize(2);
+    tft.setTextColor(WHITE);
+    tft.setCursor(buttonX[i] + 10, buttonY + 15);
+    tft.print(buttonLabel[i]);
   }
+}
 
-  // Text
+void touch_button(int x, int y, const String label, uint16_t color){
+  tft.setFreeFont(NULL);
   tft.setTextSize(2);
-  tft.setTextColor(WHITE);
-  tft.setCursor(x + 15, y + 25);
+  tft.setTextColor(color);
+  tft.setCursor(x + 10, y + 15);
   tft.print(label);
 }
-void touch_button(){
- for (int i = 0; i < 3; i++) {
-    drawButton(buttonX[i], buttonY, buttonWidth, buttonHeight, (i == 0) ? "Sat" : ((i == 1) ? "Split" : "Ic705"), false);
-    // Füge Abstand zwischen den Buttons hinzu
-    buttonX[i] += buttonWidth + buttonSpacing;
+
+void touch_calibrate()
+{
+  uint16_t calData[5];
+ 
+
+  // Calibrate
+  tft.fillScreen(TFT_BLACK);
+  tft.setCursor(20, 0);
+  tft.setTextFont(2);
+  tft.setTextSize(1);
+  tft.setTextColor(TFT_WHITE, TFT_BLACK);
+
+  tft.println("Touch corners as indicated");
+
+  tft.setTextFont(1);
+  tft.println();
+
+  tft.calibrateTouch(calData, TFT_MAGENTA, TFT_BLACK, 15);
+
+  Serial.println(); Serial.println();
+  Serial.println("// Use this calibration code in setup():");
+  Serial.print("  uint16_t calData[5] = ");
+  Serial.print("{ ");
+
+  for (uint8_t i = 0; i < 5; i++)
+  {
+    Serial.print(calData[i]);
+    if (i < 4) Serial.print(", ");
   }
+
+  Serial.println(" };");
+  Serial.print("  tft.setTouch(calData);");
+  Serial.println(); Serial.println();
+
+  tft.fillScreen(TFT_BLACK);
+  
+  tft.setTextColor(TFT_GREEN, TFT_BLACK);
+  tft.println("Calibration complete!");
+  tft.println("Calibration code sent to Serial port.");
+
+  delay(4000);
 }
+
+
 void Draw_TX() {
   //TX 
   // tft.fillRoundRect(190, 80, 50, 55, 10, RED);
@@ -43,10 +85,10 @@ void Draw_TX() {
   //TX Topline
   tft.setFreeFont(NULL);  // Set default font
   tft.setTextSize(2);
-  tft.drawRoundRect(2, 1, 65, 30, 5, RED);  // X, Y, Breite, Höhe, abgerundete Ecken, Rahmenfarbe
-  tft.fillRect(2, 1, 65, 30, BLACK); //debug setting background
+  tft.drawRoundRect(7, 2, 25, 20, 5, RED);  // X, Y, Breite, Höhe, abgerundete Ecken, Rahmenfarbe
+  tft.fillRect(2, 1, 65, 28, BLACK); //debug setting background
   tft.setTextColor(RED);
-  tft.setCursor(5, 7);
+  tft.setCursor(7, 7);
   tft.print("TX");
 }
 
@@ -60,14 +102,15 @@ void Draw_RX() {
   // RX Topline
   tft.setFreeFont(NULL);  // Set default font
   tft.setTextSize(2);
-  tft.fillRect(1, 1, 65, 30, BLACK); //debug setting background
+  tft.drawRoundRect(7, 2, 25, 20, 5, WHITE);  // X, Y, Breite, Höhe, abgerundete Ecken, Rahmenfarbe
+  tft.fillRect(1, 1, 65, 28, BLACK); //debug setting background
   tft.setTextColor(WHITE);
-  tft.setCursor(5, 7);
+  tft.setCursor(9, 7);
   tft.print("RX");
 }
 
 void Clear_Scr() {
-  tft.fillRect(0, 31, 240, 104, BLACK);
+  tft.fillRect(0, 30, 240, 104, BLACK);
 }
 
 void BT_Conn_Status(const char* read_Conn_Status) {
@@ -83,7 +126,7 @@ void BT_Conn_Status(const char* read_Conn_Status) {
     tft.print("BT CAT");
     Clear_Scr();
     Draw_RX();
-    touch_button();
+    drawButton();
   } else {
     //tft.fillRect(80, 1, 155, 28, MAROON);  // productive setting background
     tft.setTextColor(RED);
@@ -124,7 +167,7 @@ void show_Mode(uint8_t newModMode, uint8_t newRXfilter) {
   tft.setFreeFont(NULL);  // Set font to GLCD
   // tft.setFreeFont(&FreeSans9pt7b);
   // tft.setFreeFont(&Tiny3x3a2pt7b);
-  tft.fillRect(251, 7, 85, 30, BLACK);  //erase previous freq   vk3pe x,y,width,height,colour 10,40,137,40
+  tft.fillRect(251, 7, 85, 28, BLACK);  //erase previous freq   vk3pe x,y,width,height,colour 10,40,137,40
   tft.setTextSize(2);
   tft.setCursor(251, 7);
   tft.setTextColor(YELLOW);
@@ -191,7 +234,12 @@ void set_LCD_Curennt_RX(unsigned long frequency) { // Links Oben
   tft.setTextSize(1);
   tft.setCursor(115, 100);
   tft.setTextColor(YELLOW);
-  tft.print("RX");
+  if(G_Split == 1){
+    tft.print("RX");
+  }else{
+    tft.print("TX & RX");
+  }
+  
   tft.setCursor(115, 125);
   tft.print("");
 }
@@ -200,37 +248,44 @@ void set_LCD_Curennt_TX(unsigned long frequency) { // Rechts Oben
 
   freq_kHz = G_SPLIT_frequency / 1000;       // frequency is now in kHz
   G_subVFOSplitBand = get_Band(freq_kHz);  // get band according the current frequency
+  if(G_Split == 1){
+    tft.setFreeFont(&FreeSansBold9pt7b);   //bigger numbers etc from now on. <<<<<<<<-------------------
+    // tft.setFreeFont(&FreeMonoBold18pt7b);
+    // tft.setFreeFont(&Orbitron_Light_32);
+    tft.fillRoundRect(tft.width()/2+1, 35, tft.width()/2, 40, 5, BLUE);  //erase previous freq   vk3pe x,y,width,height,colour 10,40,137,40
+    
+    tft.setTextSize(2);
+    tft.setCursor(tft.width()/2+6, 67); 
+    tft.setTextColor(WHITE);  // at power up not set!
+    
+    // mod by DL1BZ
+    tft.print(0.000001 * G_SPLIT_frequency, 5);  //show Frequency in MHz with 5 decimal digits
 
-  tft.setFreeFont(&FreeSansBold9pt7b);   //bigger numbers etc from now on. <<<<<<<<-------------------
-  // tft.setFreeFont(&FreeMonoBold18pt7b);
-  // tft.setFreeFont(&Orbitron_Light_32);
-  tft.fillRoundRect(tft.width()/2+1, 35, tft.width()/2, 40, 5, BLUE);  //erase previous freq   vk3pe x,y,width,height,colour 10,40,137,40
-  
-  tft.setTextSize(2);
-  tft.setCursor(tft.width()/2+6, 67); 
-  tft.setTextColor(WHITE);  // at power up not set!
-  
-  // mod by DL1BZ
-  tft.print(0.000001 * G_SPLIT_frequency, 5);  //show Frequency in MHz with 5 decimal digits
-
-  tft.fillRect(tft.width()/2+0, 80, 105, 55, BLACK);  //-erase   x,y,width, height
-  tft.drawRoundRect(tft.width()/2+0, 80, 105, 55, 5, WHITE);
-  tft.setCursor(tft.width()/2+5, 120);                //-
-  tft.setTextColor(YELLOW);  //-
-  tft.setFreeFont(&FreeSansBold9pt7b);
-  tft.setTextSize(2);
-  if(G_currentBand == NUM_BANDS ){
-    tft.setTextColor(RED); 
+    tft.fillRect(tft.width()/2+0, 80, 105, 55, BLACK);  //-erase   x,y,width, height
+    tft.drawRoundRect(tft.width()/2+0, 80, 105, 55, 5, WHITE);
+    tft.setCursor(tft.width()/2+5, 120);                //-
+    tft.setTextColor(YELLOW);  //-
+    tft.setFreeFont(&FreeSansBold9pt7b);
+    tft.setTextSize(2);
+    if(G_currentBand == NUM_BANDS ){
+      tft.setTextColor(RED); 
+    }
+    tft.print(band2string[G_subVFOSplitBand]);  //-
+    tft.fillRect(tft.width()/2+105, 80, 85, 55, BLACK);  //erase previous freq   vk3pe x,y,width,height,colour 10,40,137,40
+    tft.drawRoundRect(tft.width()/2+105, 80, 85, 55, 5, WHITE);
+    tft.setTextSize(1);
+    tft.setCursor(tft.width()/2+115, 100);
+    tft.setTextColor(YELLOW);
+    tft.print("TX");
+    tft.setCursor(tft.width()/2+115, 125);
+    tft.print("Split");
+  }else{
+    tft.fillRoundRect(tft.width()/2+1, 35, tft.width()/2, 40, 5, BLACK);  //erase previous freq   vk3pe x,y,width,height,colour 10,40,137,40
+    tft.fillRect(tft.width()/2+0, 80, 105, 55, BLACK);  //-erase   x,y,width, height
+    tft.drawRoundRect(tft.width()/2+0, 80, 105, 55, 5, BLACK);
+    tft.fillRect(tft.width()/2+105, 80, 85, 55, BLACK);  //erase previous freq   vk3pe x,y,width,height,colour 10,40,137,40
+    tft.drawRoundRect(tft.width()/2+105, 80, 85, 55, 5, BLACK);
   }
-  tft.print(band2string[G_subVFOSplitBand]);  //-
-  tft.fillRect(tft.width()/2+105, 80, 85, 55, BLACK);  //erase previous freq   vk3pe x,y,width,height,colour 10,40,137,40
-  tft.drawRoundRect(tft.width()/2+105, 80, 85, 55, 5, WHITE);
-  tft.setTextSize(1);
-  tft.setCursor(tft.width()/2+115, 100);
-  tft.setTextColor(YELLOW);
-  tft.print("TX");
-  tft.setCursor(tft.width()/2+115, 125);
-  tft.print("Split");
 }
 
 void set_LCD_SAT_RX(unsigned long long frequency) { //Links Unten
@@ -238,75 +293,87 @@ void set_LCD_SAT_RX(unsigned long long frequency) { //Links Unten
 
   freq_kHz = frequency / 1000;       // frequency is now in kHz
   G_currentDownBand = get_Band(freq_kHz);  // get band according the current frequency
+  if(G_Sat == 1){
+    tft.setFreeFont(&FreeSansBold9pt7b);   //bigger numbers etc from now on. <<<<<<<<-------------------
+    // tft.setFreeFont(&FreeMonoBold18pt7b);
+    // tft.setFreeFont(&Orbitron_Light_32);
+    tft.fillRoundRect(0, 140, tft.width()/2-1, 40, 5, BLUE);  //erase previous freq   vk3pe x,y,width,height,colour 10,40,137,40
+    tft.setTextColor(WHITE);  // at power up not set!
+  
+    tft.setTextSize(2);
+    tft.setCursor(5, 172);
+    // mod by DL1BZ
 
-  tft.setFreeFont(&FreeSansBold9pt7b);   //bigger numbers etc from now on. <<<<<<<<-------------------
-  // tft.setFreeFont(&FreeMonoBold18pt7b);
-  // tft.setFreeFont(&Orbitron_Light_32);
-  tft.fillRoundRect(0, 140, tft.width()/2-1, 40, 5, BLUE);  //erase previous freq   vk3pe x,y,width,height,colour 10,40,137,40
-  tft.setTextColor(WHITE);  // at power up not set!
- 
-  tft.setTextSize(2);
-  tft.setCursor(5, 172);
-  // mod by DL1BZ
+    tft.print(0.000001 * frequency, 5);  //show Frequency in MHz with 5 decimal digits
 
-  tft.print(0.000001 * frequency, 5);  //show Frequency in MHz with 5 decimal digits
-
-  tft.setCursor(5, 225);                //-
-  tft.fillRect(0, 190, 105, 55, BLACK);  //-erase   x,y,width, height
-  tft.drawRoundRect(0, 190, 105, 55, 5, WHITE);
-  tft.setTextColor(YELLOW);  //-
-  tft.setFreeFont(&FreeSansBold9pt7b);
-  tft.setTextSize(2);
-  if(G_currentDownBand == NUM_BANDS ){
-    tft.setTextColor(RED); 
+    tft.setCursor(5, 225);                //-
+    tft.fillRect(0, 190, 105, 55, BLACK);  //-erase   x,y,width, height
+    tft.drawRoundRect(0, 190, 105, 55, 5, WHITE);
+    tft.setTextColor(YELLOW);  //-
+    tft.setFreeFont(&FreeSansBold9pt7b);
+    tft.setTextSize(2);
+    if(G_currentDownBand == NUM_BANDS ){
+      tft.setTextColor(RED); 
+    }
+    tft.print(band2string[G_currentDownBand]);  
+    tft.fillRect(105, 190, 85, 55, BLACK);  //erase previous freq   vk3pe x,y,width,height,colour 10,40,137,40
+    tft.drawRoundRect(105, 190, 85, 55, 5, WHITE);
+    tft.setTextSize(1);
+    tft.setCursor(115, 210);
+    tft.setTextColor(YELLOW);
+    tft.print("RX");
+    tft.setCursor(115, 235);
+    tft.print("DownConv.");
+  }else{
+    tft.fillRoundRect(0, 140, tft.width()/2-1, 40, 5, BLACK);
+    tft.fillRect(0, 190, 105, 55, BLACK);  //-erase   x,y,width, height
+    tft.drawRoundRect(0, 190, 105, 55, 5, BLACK);
+    tft.fillRect(105, 190, 85, 55, BLACK);  //erase previous freq   vk3pe x,y,width,height,colour 10,40,137,40
+    tft.drawRoundRect(105, 190, 85, 55, 5, BLACK);
   }
-  tft.print(band2string[G_currentDownBand]);  
-  tft.fillRect(105, 190, 85, 55, BLACK);  //erase previous freq   vk3pe x,y,width,height,colour 10,40,137,40
-  tft.drawRoundRect(105, 190, 85, 55, 5, WHITE);
-  tft.setTextSize(1);
-  tft.setCursor(115, 210);
-  tft.setTextColor(YELLOW);
-  tft.print("RX");
-  tft.setCursor(115, 235);
-  tft.print("DownConv.");
-
 }
 void set_LCD_SAT_TX(unsigned long frequency) { //Rechts Unten
   unsigned long freq_kHz;
+  if( G_Sat == 1 && G_Split == 1) {
+    freq_kHz = G_Dipslay_TX_frequency / 1000;       // frequency is now in kHz
+    G_subVFOUPBand = get_Band(freq_kHz);  // get band according the current frequency
 
-  freq_kHz = G_Dipslay_TX_frequency / 1000;       // frequency is now in kHz
-  G_subVFOUPBand = get_Band(freq_kHz);  // get band according the current frequency
+    tft.setFreeFont(&FreeSansBold9pt7b);   //bigger numbers etc from now on. <<<<<<<<-------------------
+    // tft.setFreeFont(&FreeMonoBold18pt7b);
+    // tft.setFreeFont(&Orbitron_Light_32);
+    tft.fillRoundRect(tft.width()/2+1, 140, tft.width()/2, 40, 5, BLUE);  //erase previous freq   vk3pe x,y,width,height,colour 10,40,137,40
+    tft.setCursor(tft.width()/2+6, 172); 
+    tft.setTextSize(2);
+    tft.setTextColor(WHITE);  // at power up not set!
+  
+    // mod by DL1BZ
+    tft.print(0.000001 * G_Dipslay_TX_frequency, 5);  //show Frequency in MHz with 5 decimal digits
 
-  tft.setFreeFont(&FreeSansBold9pt7b);   //bigger numbers etc from now on. <<<<<<<<-------------------
-  // tft.setFreeFont(&FreeMonoBold18pt7b);
-  // tft.setFreeFont(&Orbitron_Light_32);
-  tft.fillRoundRect(tft.width()/2+1, 140, tft.width()/2, 40, 5, BLUE);  //erase previous freq   vk3pe x,y,width,height,colour 10,40,137,40
-  tft.setCursor(tft.width()/2+6, 172); 
-  tft.setTextSize(2);
-  tft.setTextColor(WHITE);  // at power up not set!
- 
-  // mod by DL1BZ
-  tft.print(0.000001 * G_Dipslay_TX_frequency, 5);  //show Frequency in MHz with 5 decimal digits
-
-  tft.fillRect(tft.width()/2+0, 190, 105, 55, BLACK);  //-erase   x,y,width, height
-  tft.drawRoundRect(tft.width()/2+0, 190, 105, 55, 5, WHITE);
-  tft.setCursor(tft.width()/2+5, 225);                //-
-  tft.setTextColor(YELLOW);  //-
-  tft.setFreeFont(&FreeSansBold9pt7b);
-  tft.setTextSize(2);
-    if(G_subVFOUPBand == NUM_BANDS ){
-    tft.setTextColor(RED); 
+    tft.fillRect(tft.width()/2+0, 190, 105, 55, BLACK);  //-erase   x,y,width, height
+    tft.drawRoundRect(tft.width()/2+0, 190, 105, 55, 5, WHITE);
+    tft.setCursor(tft.width()/2+5, 225);                //-
+    tft.setTextColor(YELLOW);  //-
+    tft.setFreeFont(&FreeSansBold9pt7b);
+    tft.setTextSize(2);
+      if(G_subVFOUPBand == NUM_BANDS ){
+      tft.setTextColor(RED); 
+    }
+    tft.print(band2string[G_subVFOUPBand]);  //-
+    tft.fillRect(tft.width()/2+105, 190, 85, 55, BLACK);  //erase previous freq   vk3pe x,y,width,height,colour 10,40,137,40
+    tft.drawRoundRect(tft.width()/2+105, 190, 85, 55, 5, WHITE);
+    tft.setTextSize(1);
+    tft.setCursor(tft.width()/2+115, 210);
+    tft.setTextColor(YELLOW);
+    tft.print("TX");
+    tft.setCursor(tft.width()/2+115, 235);
+    tft.print("UPconv.");
+  }else{
+    tft.fillRoundRect(tft.width()/2+1, 140, tft.width()/2, 40, 5, BLACK);  //erase previous freq   vk3pe x,y,width,height,colour 10,40,137,40
+    tft.fillRect(tft.width()/2+0, 190, 105, 55, BLACK);  //-erase   x,y,width, height
+    tft.drawRoundRect(tft.width()/2+0, 190, 105, 55, 5, BLACK);
+    tft.fillRect(tft.width()/2+105, 190, 85, 55, BLACK);  //erase previous freq   vk3pe x,y,width,height,colour 10,40,137,40
+    tft.drawRoundRect(tft.width()/2+105, 190, 85, 55, 5, BLACK);
   }
-  tft.print(band2string[G_subVFOUPBand]);  //-
-  tft.fillRect(tft.width()/2+105, 190, 85, 55, BLACK);  //erase previous freq   vk3pe x,y,width,height,colour 10,40,137,40
-  tft.drawRoundRect(tft.width()/2+105, 190, 85, 55, 5, WHITE);
-  tft.setTextSize(1);
-  tft.setCursor(tft.width()/2+115, 210);
-  tft.setTextColor(YELLOW);
-  tft.print("TX");
-  tft.setCursor(tft.width()/2+115, 235);
-  tft.print("UPconv.");
-
 }
 void userPTT(uint8_t newState) {
 

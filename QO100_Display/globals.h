@@ -79,6 +79,8 @@ extern bool SET_QO100;
 extern int G_Sat;
 extern int G_Split;
 extern int G_ic705;
+extern int touchcalibrate;
+extern unsigned long debounceDelay;
 // Weitere globale Variablen hier hinzufügen, falls erforderlich
 
 // Timer-Variablen
@@ -101,12 +103,17 @@ extern bool UHF_ptt_Enable;
 extern const int freq;
 extern const int ledChannel;
 extern const int resolution;
-extern int buttonX[3];
+extern int buttonX[4];
 extern int buttonY;
 extern int buttonWidth;
 extern int buttonHeight;
 extern int buttonSpacing;
-extern bool buttonPressed[3];
+extern bool buttonPressed[4];
+extern int sliderX;
+extern int sliderY;
+extern int sliderWidth;
+extern int sliderHeight;
+extern int sliderSpacing;
 extern uint8_t civAddr;
 extern uint8_t G_currentBand;
 extern uint8_t G_subVFOSplitBand;

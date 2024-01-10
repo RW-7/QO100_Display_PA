@@ -19,7 +19,6 @@ enum radioModMode_t : uint8_t;
 enum radioFilter_t : uint8_t;
 enum radioOnOff_t : uint8_t;
 
-
 // Function declarations
 void setRadioOnOff(radioOnOff_t newState);
 void setRXTX(uint8_t newState);

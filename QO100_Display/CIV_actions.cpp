@@ -59,7 +59,6 @@ void  setRadioOnOff(radioOnOff_t newState) {
     //!// or put your code here ...
 
 }
-
 //---------------------------------------------------------------------------------------------
 // Handle the RX/TX state of the radio
 

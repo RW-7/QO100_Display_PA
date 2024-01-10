@@ -11,5 +11,4 @@ extern uint16_t touchY;
 
 // Funktion für die Touch-Behandlung
 void touchloop();
-
 #endif  // TOUCH_H

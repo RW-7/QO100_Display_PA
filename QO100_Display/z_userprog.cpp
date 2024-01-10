@@ -128,10 +128,11 @@ void userFrequency(unsigned long newFrequency) {
   #ifndef usePA
     set_PAbands(G_frequency);
   #endif
-  
+    Serial.print( "userFrequency G_Sat x " );
+          Serial.println( G_Sat );
     set_LCD_Curennt_RX(G_frequency);
     
-  if (SET_QO100!=G_QO100 and G_QO100==1){
+  if (G_Split == 1){
     #ifdef debug
       Serial.print ("userFrequency:"); Serial.println (G_frequency);
       Serial.print ("G_RXTX:"); Serial.println (G_RXTX);
@@ -154,7 +155,6 @@ void userFrequency(unsigned long newFrequency) {
     FrequencyDigits freqDigits = FrequencyDigits(G_SPLIT_frequency);
     #ifdef debug
     Serial.println ("RX");
-    Serial.println ("QO100");
     Serial.print ("G_SPLIT_frequency:"); Serial.println (G_SPLIT_frequency);
     Serial.print ("G_Dipslay_RX_frequency:"); Serial.println (G_Dipslay_RX_frequency); 
     Serial.print ("G_Dipslay_TX_frequency:"); Serial.println (G_Dipslay_TX_frequency);
@@ -177,7 +177,9 @@ void userFrequency(unsigned long newFrequency) {
         getVFOQRGByte(0, freqDigits.digitArray[8])
     };
     //Set Frequenz
-    civ.writeMsg(civAddr, CIV_C_unSelVFO_READ, CIV_T_SetVFOQRG, CIV_wFast);
+     if (G_Split == 1){
+      civ.writeMsg(civAddr, CIV_C_unSelVFO_READ, CIV_T_SetVFOQRG, CIV_wFast);
+     }
   }
 
 }

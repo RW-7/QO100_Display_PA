@@ -45,7 +45,7 @@ const String    RXTXstr[2] = {
 
 
 // clear test translation of the modulation modes
-#if defined(debug) && defined(modmode)
+#if defined(modmode)
 const String modModeStr[11] = {
   "LSB   ", // 00 (00 .. 08 is according to ICOM's documentation) 
   "USB   ", // 01
@@ -60,6 +60,12 @@ const String modModeStr[11] = {
   "NDEF  "  // 10
 };
 #endif
+const String buttonLabel[4] = {
+  "Sat", // 00 (00 .. 08 is according to ICOM's documentation) 
+  "Split", // 01
+  "Demo", // 02
+  "Demo2"
+};
 //=========================================================================================
 // creating bandinfo based on the frequency info
 
