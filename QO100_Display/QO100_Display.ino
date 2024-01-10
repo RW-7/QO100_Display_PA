@@ -86,20 +86,20 @@ void setup() {
 
   // Civ mitteilen, welche Adresse des Radios verwendet werden soll
   civ.registerAddr(civAddr);
-
+  
   // Hinweis: Im fastPTT-Modus kann dies signifikant langsamer sein, da dies in diesem Fall die PTT-Verzögerung nicht beeinflusst
   init_delayMeas; // Debugging auf ESP32: PTT-Verzögerungsmessung einrichten
   
   init_TFT();
   //!// Setzen Sie Ihren Setup-Code (unabhängig von Civ) hier ein ... oder legen Sie ihn in die Datei "z_userprog.ino"
-
+  //userSetup();
   // Baseloop-Timer initialisieren...
   t_curr_lp = millis();
   ts_last_lp = t_curr_lp;
 }
 
 //============================ Hauptloop ====================================================
-
+unsigned long lastDebounceTime1 = 0;
 void loop() {
   t_curr_lp = millis();
 
@@ -119,7 +119,11 @@ void loop() {
 
     //!// Setzen Sie Ihren Baseloop-Code (unabhängig von Civ) hier ein ... oder legen Sie ihn in die Datei "z_userprog.ino"
     userBaseLoop();
-
+    
+    if (t_curr_lp - lastDebounceTime1 > debounceDelay1) {
+      lastDebounceTime1 = t_curr_lp;
+      setTimeString();
+    }
     // Wenn Sie Touch-Funktionen implementiert haben
     touchloop();
     if (touchcalibrate){

@@ -17,6 +17,10 @@ void touchloop() {
         if (touchX > buttonX[i] && touchX < buttonX[i] + buttonWidth &&
            touchY > buttonY && touchY < buttonY + buttonHeight) {
         // Überprüfe, ob der Button bereits gedrückt wurde
+         Serial.print( "buttonPressedx true i: " );
+          Serial.print( i );
+          Serial.print( " buttonPressedx true: " );
+          Serial.println( buttonPressed[i] );
         if (!buttonPressed[i]) {
           // Je nach Button-Nummer setze den entsprechenden Wert und Status
           if (i == 0) {
@@ -26,16 +30,18 @@ void touchloop() {
             userFrequency(G_frequency);
             G_Split = 1;
           } else if (i == 2) {
-            G_ic705 = 1;
-            userFrequency(G_frequency);
-          }
+           //HF PA Shelly ON OFF G_ic705 = 1;
 
-          // Aktualisiere den Button
+          
+          } 
+          buttonPressed[i] = true;
+          touch_button(buttonX[i], buttonY,buttonLabel[i], RED);
+    
          
-          touch_button(buttonX[i], buttonY,buttonLabel[i], WHITE);
+          
 
           // Setze den Status des Buttons auf gedrückt
-          buttonPressed[i] = true;
+          
            Serial.print( "G_Sat x " );
           Serial.println( G_Sat );
             Serial.print( "G_Split x " );
@@ -45,8 +51,11 @@ void touchloop() {
         } else {
           // Button wurde wieder losgelassen
           // Setze den Button zurück
-
-          touch_button(buttonX[i], buttonY,buttonLabel[i], RED);
+          Serial.print( "buttonPressedx False i: " );
+          Serial.print( i );
+          Serial.print( " buttonPressedx False: " );
+          Serial.println( buttonPressed[i] );
+          touch_button(buttonX[i], buttonY,buttonLabel[i], GREEN);
 
           // Setze den Status des Buttons auf nicht gedrückt
           buttonPressed[i] = false;

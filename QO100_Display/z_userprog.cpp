@@ -109,7 +109,8 @@ void setup_wifi() {
       return;
     }
   }
-
+  timeClient.begin();
+  extern WiFiClient client;  // Deklaration der globalen Variable
   Serial.println("\nConnected to the WiFi network");
   Serial.print("Local ESP32 IP: ");
   Serial.println(WiFi.localIP());
@@ -210,7 +211,7 @@ void userSetup() {
 
   //init_DAC(); // initialize analog output
 
-  userPTT(0);  // initialize the "RX" symbol in the screen
+ // userPTT(0);  // initialize the "RX" symbol in the screen
 
 
 

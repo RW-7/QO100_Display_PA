@@ -5,6 +5,7 @@
 #include "Display_functionen.h" 
 #include "CIV_actions.h" 
 #include "z_userprog.h"
+#include <TimeLib.h>
 
 // Deklaration der globalen Variablen aus der globals.h-Datei
 extern bool HF_ptt_Enable;
@@ -18,8 +19,8 @@ int buttonCount = sizeof(buttonX) / sizeof(buttonX[0]);
     tft.drawRoundRect(buttonX[i], buttonY, buttonWidth, buttonHeight, 5, WHITE);    //with white border.
     tft.setFreeFont(NULL);
     tft.setTextSize(2);
-    tft.setTextColor(WHITE);
-    tft.setCursor(buttonX[i] + 10, buttonY + 15);
+    tft.setTextColor(GREEN);
+    tft.setCursor(buttonX[i] + 5, buttonY + 15);
     tft.print(buttonLabel[i]);
   }
 }
@@ -28,7 +29,7 @@ void touch_button(int x, int y, const String label, uint16_t color){
   tft.setFreeFont(NULL);
   tft.setTextSize(2);
   tft.setTextColor(color);
-  tft.setCursor(x + 10, y + 15);
+  tft.setCursor(x + 5, y + 15);
   tft.print(label);
 }
 
@@ -145,12 +146,19 @@ void BT_Conn_Status(const char* read_Conn_Status) {
 //------------------------------------------------------------------
 //    Show frequency in 'kHz' and band in 'Meters' text on TFT vk3pe
 //------------------------------------------------------------------
-void show_Meters(void) {
-
-  // Show Freq[KHz]
-  
+void setTimeString() {
+  time_t utcTime = now();
+  String timeString = timeFormat(utcTime);  
+  tft.setFreeFont(NULL);  // Set font to GLCD
+  tft.fillRect(371, 7, 85, 28, BLACK);
+  tft.setTextSize(2);
+  tft.setCursor(371, 7);
+  tft.setTextColor(WHITE);
+  tft.print(timeString);
 }
-
+void show_Meters(void) {
+    
+}
 void show_Mode(uint8_t newModMode, uint8_t newRXfilter) {
   // tft.setFreeFont(NULL);  // Set font to GLCD
   // // tft.setFreeFont(&FreeSans9pt7b);
@@ -328,7 +336,7 @@ void set_LCD_SAT_RX(unsigned long long frequency) { //Links Unten
     tft.fillRoundRect(0, 140, tft.width()/2-1, 40, 5, BLACK);
     tft.fillRect(0, 190, 105, 55, BLACK);  //-erase   x,y,width, height
     tft.drawRoundRect(0, 190, 105, 55, 5, BLACK);
-    tft.fillRect(105, 190, 85, 55, BLACK);  //erase previous freq   vk3pe x,y,width,height,colour 10,40,137,40
+    tft.fillRect(105, 190, 105, 55, BLACK);  //erase previous freq   vk3pe x,y,width,height,colour 10,40,137,40
     tft.drawRoundRect(105, 190, 85, 55, 5, BLACK);
   }
 }
@@ -371,7 +379,7 @@ void set_LCD_SAT_TX(unsigned long frequency) { //Rechts Unten
     tft.fillRoundRect(tft.width()/2+1, 140, tft.width()/2, 40, 5, BLACK);  //erase previous freq   vk3pe x,y,width,height,colour 10,40,137,40
     tft.fillRect(tft.width()/2+0, 190, 105, 55, BLACK);  //-erase   x,y,width, height
     tft.drawRoundRect(tft.width()/2+0, 190, 105, 55, 5, BLACK);
-    tft.fillRect(tft.width()/2+105, 190, 85, 55, BLACK);  //erase previous freq   vk3pe x,y,width,height,colour 10,40,137,40
+    tft.fillRect(tft.width()/2+105, 190, 105, 55, BLACK);  //erase previous freq   vk3pe x,y,width,height,colour 10,40,137,40
     tft.drawRoundRect(tft.width()/2+105, 190, 85, 55, 5, BLACK);
   }
 }
@@ -414,4 +422,24 @@ void userPTT(uint8_t newState) {
     digitalWrite(PTTpinUHF, newState);
   }
 #endif
+}
+String timeFormat(time_t timeValue) {
+  // Zeit in Stunden, Minuten und Sekunden aufteilen
+  int hours = hour(timeValue);
+  int minutes = minute(timeValue);
+  int seconds = second(timeValue);
+
+  // Erzeuge eine Zeichenkette im HH:MM:SS-Format
+  String formattedTime = String(hours) + ":" + twoDigits(minutes) + ":" + twoDigits(seconds);
+
+  return formattedTime;
+}
+
+String twoDigits(int number) {
+  // Funktion zur Formatierung von Zahlen in zwei Stellen
+  if (number < 10) {
+    return "0" + String(number);
+  } else {
+    return String(number);
+  }
 }

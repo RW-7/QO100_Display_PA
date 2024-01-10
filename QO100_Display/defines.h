@@ -39,9 +39,8 @@
 // if defined, also the Modulation Mode parameters of the radio are processed
 // default: inactive, i.e. commented out (since this is not needed in most of the cases)
 #define modmode
-//#define WIFI
-#define LCD
 #define WIFI
+#define LCD
 #ifdef WIFI
 // activate Wifi
 // Replace the next variables with your SSID/Password combination

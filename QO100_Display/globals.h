@@ -8,7 +8,11 @@
 #include "Display_functionen.h" 
 #include "CIV_actions.h"
 #include <CIVmaster.h> // Include only if necessary
-
+#ifdef WIFI
+#include <WiFi.h>
+#include <NTPClient.h>
+#include <WiFiUdp.h>
+#endif
 // Forward declarations
 class CIV;
 //struct CIVresult_t;
@@ -81,8 +85,12 @@ extern int G_Split;
 extern int G_ic705;
 extern int touchcalibrate;
 extern unsigned long debounceDelay;
+extern unsigned long debounceDelay1;
 // Weitere globale Variablen hier hinzufügen, falls erforderlich
-
+#ifdef WIFI
+extern WiFiUDP ntpUDP;
+extern NTPClient timeClient;
+#endif
 // Timer-Variablen
 extern uint16_t t_curr_lp;
 extern uint16_t ts_last_lp;
@@ -103,12 +111,12 @@ extern bool UHF_ptt_Enable;
 extern const int freq;
 extern const int ledChannel;
 extern const int resolution;
-extern int buttonX[4];
+extern int buttonX[6];
 extern int buttonY;
 extern int buttonWidth;
 extern int buttonHeight;
 extern int buttonSpacing;
-extern bool buttonPressed[4];
+extern bool buttonPressed[6];
 extern int sliderX;
 extern int sliderY;
 extern int sliderWidth;

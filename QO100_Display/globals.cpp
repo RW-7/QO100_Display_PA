@@ -49,18 +49,21 @@ int G_ic705;
 uint16_t t_curr_lp;       // Aktuelle Zeit der aktuellen Baseloop (am Anfang) für Berechnungen
 uint16_t ts_last_lp;      // Zeitstempel - wird am Ende jeder Baseloop-Ausführung aktualisiert
 // Touch
-int buttonX[4] = {1, 81, 162, 243};
+int buttonX[6] = {0, 80, 160, 240, 320, 400};
 int buttonY = 260;
-int buttonWidth = 70;
+int buttonWidth = 80;
 int buttonHeight = 40;
-bool buttonPressed[4] = {false, false, false,false};
-int buttonSpacing = 0;
+bool buttonPressed[6] = {false, false, false,false,false,false};
 unsigned long debounceDelay = 500;
+unsigned long debounceDelay1 = 1000;
 // WLAN-spezifische Variablen
 #ifdef WIFI
 #include <WiFi.h>
 #include <PubSubClient.h>
-
+#include <NTPClient.h>
+#include <WiFiUdp.h>
+WiFiUDP ntpUDP;
+NTPClient timeClient(ntpUDP, "pool.ntp.org");
 extern boolean HF_ptt_Enable;
 extern boolean VHF_ptt_Enable;
 extern boolean UHF_ptt_Enable;
@@ -68,7 +71,6 @@ int bandvoltage;
 //const int LED;
 // const int C_RELAIS;
 int brightness;
-
 PubSubClient client;
 #endif
 

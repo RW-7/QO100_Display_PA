@@ -60,11 +60,13 @@ const String modModeStr[11] = {
   "NDEF  "  // 10
 };
 #endif
-const String buttonLabel[4] = {
+const String buttonLabel[6] = {
   "Sat", // 00 (00 .. 08 is according to ICOM's documentation) 
   "Split", // 01
-  "Demo", // 02
-  "Demo2"
+  "HF PA", // 02
+  "UHF PA", // 02
+  "SAT PA" , // 02
+  "Menu"
 };
 //=========================================================================================
 // creating bandinfo based on the frequency info

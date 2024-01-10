@@ -8,6 +8,7 @@
 void Draw_TX();
 void Draw_RX();
 void Clear_Scr();
+void setTimeString();
 void BT_Conn_Status(const char* read_Conn_Status);
 void show_Meters();
 void show_Mode(uint8_t newModMode, uint8_t newRXfilter); // Mode & Filter
@@ -17,6 +18,8 @@ void set_LCD_Curennt_TX(unsigned long frequency); // TX im Splitmodus (Gerätefr
 void set_LCD_SAT_RX(unsigned long long frequency); // RX und TX Frequenz im single modus mit Downconverter.  RX im Splitmodus mit Downconverter
 void set_LCD_SAT_TX(unsigned long frequency); // TX im Splitmodus mit Upconverter
 void drawButton();
+String timeFormat(time_t timeValue);
+String twoDigits(int number);
 void touch_button(int x, int y, const String label, uint16_t color);
 void touch_calibrate();
 void userPTT(uint8_t newState);
