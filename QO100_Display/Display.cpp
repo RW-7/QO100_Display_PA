@@ -40,11 +40,7 @@ void init_TFT(void)
     tft.fillScreen(BLACK);
     tft.setRotation(3);
     //tft.fillRoundRect(0, 0, tft.width(), 30, 5, MAROON);   // background for screen title
-<<<<<<< HEAD
     tft.drawRoundRect(0, 0, tft.width(), 30, 5, WHITE);    //with white border.
-=======
-    tft.drawRoundRect(0, 0, tft.width(), 35, 5, WHITE);    //with white border.
->>>>>>> df88bebd5ed2826a2ecc2b96c45f826ec8f9e18d
     tft.setTextSize(2);                  //for default Font only.Font is later changed.
     tft.setTextColor(YELLOW);
 
