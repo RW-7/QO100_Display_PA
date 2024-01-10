@@ -41,6 +41,7 @@ void Draw_TX() {
   // tft.drawLine(194, 88, 215, 103, WHITE);
   // tft.drawLine(235, 88, 215, 103, WHITE);
   //TX Topline
+<<<<<<< HEAD
   tft.setFreeFont(NULL);  // Set default font
   tft.setTextSize(2);
   tft.drawRoundRect(2, 1, 65, 30, 5, RED);  // X, Y, Breite, Höhe, abgerundete Ecken, Rahmenfarbe
@@ -48,6 +49,14 @@ void Draw_TX() {
   tft.setTextColor(RED);
   tft.setCursor(5, 7);
   tft.print("TX");
+=======
+  tft.setTextSize(1);
+  tft.fillRect(2, 1, 65, 35, BLACK); //debug setting background
+   tft.setTextColor(RED);
+  tft.setCursor(3, 7);
+    tft.print("TX");
+  // tft.print("Tx");
+>>>>>>> df88bebd5ed2826a2ecc2b96c45f826ec8f9e18d
 }
 
 void Draw_RX() {
@@ -58,12 +67,21 @@ void Draw_RX() {
   // tft.drawLine(232, 85, 212, 90, BLACK);
   // tft.drawLine(232, 125, 212, 120, BLACK);
   // RX Topline
+<<<<<<< HEAD
   tft.setFreeFont(NULL);  // Set default font
   tft.setTextSize(2);
   tft.fillRect(1, 1, 65, 30, BLACK); //debug setting background
   tft.setTextColor(WHITE);
   tft.setCursor(5, 7);
   tft.print("RX");
+=======
+  tft.fillRect(1, 1, 65, 35, BLACK); //debug setting background
+  tft.setTextSize(1);
+   tft.setTextColor(WHITE);
+   tft.setCursor(3, 7);
+    tft.print("RX");
+  // tft.print("Rx");
+>>>>>>> df88bebd5ed2826a2ecc2b96c45f826ec8f9e18d
 }
 
 void Clear_Scr() {

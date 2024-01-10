@@ -75,7 +75,11 @@
 #define PTTpinUHF 32  //PTT out UHF
 #define LED 27       //Band voltage
 #define C_RELAIS 25 //Coax relais HF / VHF-UHF
+<<<<<<< HEAD
 #define NUM_BANDS 16   /* Number of Bands (depending on the radio) */
+=======
+#define NUM_BANDS 13   /* Number of Bands (depending on the radio) */
+>>>>>>> df88bebd5ed2826a2ecc2b96c45f826ec8f9e18d
 // repetition rate of the base loop in ms, i.e. every 10ms an action can/will be taken
 #define BASELOOP_TICK 10
 // note: you can reduce the PTT delay down to 15ms max in fastPTT mode, if you set BASELOOP_TICK to 5ms
