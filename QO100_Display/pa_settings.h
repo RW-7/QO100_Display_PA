@@ -7,4 +7,6 @@
 extern int bandvoltage;
 // Funktionen und weitere Deklarationen hier
 void set_PAbands(unsigned long frequency);
+bool PA_ON_HF();
+bool PA_ON_SAT();
 #endif // PA_SETTINGS_H

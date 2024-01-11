@@ -17,7 +17,8 @@ uint16_t ts_RXTX_sent = 0;   // Zeitstempel[ms] der letzten an das Radio gesende
 uint16_t ts_f_sent = 0;      // Zeitstempel[ms] der letzten an das Radio gesendeten Frequenzabfrage
 // Hinzugefügt von DL1BZ
 uint16_t ts_TXPWR_sent = 0;   // Zeitstempel[ms] der letzten an das Funkgerät gesendeten TXPWR-Anfrage
-
+uint16_t ts_25_sent = 0;   // Zeitstempel[ms] der letzten an das Funkgerät gesendeten TXPWR-Anfrage
+uint16_t ts_26_sent = 0;   // Zeitstempel[ms] der letzten an das Funkgerät gesendeten TXPWR-Anfrage
 #ifdef modmode
 uint16_t ts_Mod_sent = 0; // Zeitstempel[ms] der letzten an das Radio gesendeten ModMode-Anfrage
 #endif
@@ -37,8 +38,10 @@ uint8_t G_Mod = MOD_NDEF;             // Modulation mode (USB, LSB, etc...)
 uint8_t G_RXfilter = FIL_NDEF;        // RX filter in use (Fil1, Fil2, Fil3);
 // Hinzugefügt von DL1BZ
 unsigned short G_TXPWR = 0;          // TX Power (0..255 = 0-10W)
-bool G_QO100 = 1;             // 0 == OFF; 1 == on
-bool G_QO100_BAND_RX = 2;     // 2 == 2m Band RX;
+bool ShellyHF;             // 0 == OFF; 1 == on
+bool ShellySAT;     // 2 == 2m Band RX;
+bool isShellyHF;
+bool isShellySAT;
 bool LCD_Curennt_RX = 1;           // 0 == RX; 1 == TX on
 int G_Sat;
 int G_Split;
@@ -56,6 +59,8 @@ int buttonHeight = 40;
 bool buttonPressed[6] = {false, false, false,false,false,false};
 unsigned long debounceDelay = 500;
 unsigned long debounceDelay1 = 1000;
+const char* shellyHF_URL = "http://192.168.4.197/relay/0";
+const char* shellySAT_URL = "http://192.168.4.78/relay/0";
 // WLAN-spezifische Variablen
 #ifdef WIFI
 #include <WiFi.h>

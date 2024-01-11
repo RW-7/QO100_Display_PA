@@ -41,18 +41,7 @@ void init_TFT(void)
     tft.setRotation(3);
     //tft.fillRoundRect(0, 0, tft.width(), 30, 5, MAROON);   // background for screen title
     tft.drawRoundRect(0, 0, tft.width(), 30, 5, WHITE);    //with white border.
-    tft.setTextSize(2);                  //for default Font only.Font is later changed.
-    tft.setTextColor(YELLOW);
-
-   // tft.setTextColor(WHITE);            //white from now on
-
-   tft.setCursor(185, 45);               //
-   // tft.setTextSize(3);
-   //tft.print("MHz");
-   // tft.setTextSize(1);
-    // tft.setCursor(150, 95) ; 
-   //  tft.setCursor(135, 107);             //
-   //  tft.print("band");                   //"160m" etc   or Out if invalid Freq. for Ham bands.
+ 
     #ifdef useTouch
      
     tft.setTouch(calData);

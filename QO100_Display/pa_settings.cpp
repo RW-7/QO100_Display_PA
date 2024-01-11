@@ -157,3 +157,28 @@ void set_PAbands(unsigned long frequency) {
 
   show_Meters();  //Show frequency in kHz and band in Meters (80m etc) on TFT
 }
+bool PA_ON_HF(){
+  if (ShellyHF != 1 || HF_MIN_QRG_DEFAULT > G_frequency ||  HF_MAX_QRG_DEFAULT < G_frequency){
+    return setShellyStatus(shellyHF_URL,"turn=off");
+  }else{
+    return setShellyStatus(shellyHF_URL,"turn=on");}
+}
+bool PA_ON_SAT(){
+Serial.print("ShellySAT ");
+    Serial.println(ShellySAT);
+    Serial.print("SAT_MIN_QRG_DEFAULT ");
+    Serial.println(SAT_MIN_QRG_DEFAULT);
+    Serial.print("G_frequency ");
+    Serial.println(G_frequency);
+        Serial.print("SAT_MAX_QRG_DEFAULT ");
+    Serial.println(SAT_MAX_QRG_DEFAULT);
+        Serial.print("G_Sat ");
+    Serial.println(G_Sat);
+            Serial.print("G_Split ");
+    Serial.println(G_Split);
+  if (ShellySAT != 1 || SAT_MIN_QRG_DEFAULT > G_SPLIT_frequency ||  SAT_MAX_QRG_DEFAULT < G_SPLIT_frequency ||  G_Sat != 1 ||  G_Split != 1){
+    return setShellyStatus(shellySAT_URL,"turn=off");
+  }else{
+    return setShellyStatus(shellySAT_URL,"turn=on");
+  }
+}

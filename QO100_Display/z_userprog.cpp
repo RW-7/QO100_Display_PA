@@ -129,23 +129,19 @@ void userFrequency(unsigned long newFrequency) {
   #ifndef usePA
     set_PAbands(G_frequency);
   #endif
-    Serial.print( "userFrequency G_Sat x " );
-          Serial.println( G_Sat );
-    set_LCD_Curennt_RX(G_frequency);
-    
-  if (G_Split == 1){
+   getShellyStatus("http://192.168.4.197/relay/0");
+  if (G_Split == 1 && G_RXTX==0){
     #ifdef debug
       Serial.print ("userFrequency:"); Serial.println (G_frequency);
       Serial.print ("G_RXTX:"); Serial.println (G_RXTX);
-      Serial.print ("G_QO100:"); Serial.println (G_QO100);
     #endif
     civ.writeMsg (civAddr, CIV_D_Splitt_ON, CIV_D_NIX , CIV_wFast);
   }else{
     civ.writeMsg (civAddr, CIV_D_Splitt_OFF, CIV_D_NIX , CIV_wFast);
   } 
-  // if RX QO100 // Set Band & Mod
+  
   if (G_RXTX==0) {
-
+    set_LCD_Curennt_RX(G_frequency);
     G_SPLIT_frequency = G_frequency + OFFSET_SPLIT_RXTX; // TX Frequenz für Upconverter subVFO
     set_LCD_Curennt_TX(G_SPLIT_frequency);
     G_Dipslay_RX_frequency = G_frequency + OFFSET_Dipslay_RX;
@@ -205,19 +201,13 @@ void userSetup() {
   digitalWrite(PTTpinVHF, LOW);
   digitalWrite(PTTpinUHF, LOW);
 
-
-
-
-
   //init_DAC(); // initialize analog output
 
  // userPTT(0);  // initialize the "RX" symbol in the screen
 
 
 
-#ifdef WIFI
-  setup_wifi();
-#endif
+
 }
 
 //-------------------------------------------------------------------------------------

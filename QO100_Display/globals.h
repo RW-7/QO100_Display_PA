@@ -20,15 +20,15 @@ class CIV;
 // modulation mode according to ICOMs documentation
 enum radioModMode_t : uint8_t {
   MOD_LSB = 0,
-  MOD_USB,
-  MOD_AM,
-  MOD_CW,
-  MOD_RTTY,
-  MOD_FM,
-  MOD_WFM,
-  MOD_CW_R,
-  MOD_RTTY_R,
-  MOD_DV   // 09 (Note: on the ICOM CIV bus, this is coded as 17 in BCD-code, i.e. 0x17)
+  MOD_USB = 1,
+  MOD_AM = 2,
+  MOD_CW = 3,
+  MOD_RTTY = 4,
+  MOD_FM = 5,
+  MOD_WFM = 6,
+  MOD_CW_R = 7,
+  MOD_RTTY_R = 8,
+  MOD_DV = 17   // 09 (Note: on the ICOM CIV bus, this is coded as 17 in BCD-code, i.e. 0x17)
 };
 
 // RX filter chosen according to ICOMs documentation
@@ -60,7 +60,8 @@ extern uint16_t ts_CIVcmdSent;
 extern uint16_t ts_RXTX_sent;
 extern uint16_t ts_f_sent;
 extern uint16_t ts_TXPWR_sent;
-
+extern uint16_t ts_25_sent;
+extern uint16_t ts_26_sent;
 #ifdef modmode
 extern uint16_t ts_Mod_sent;
 #endif
@@ -77,15 +78,18 @@ extern unsigned long G_Dipslay_TX_frequency;
 extern uint8_t G_Mod;
 extern uint8_t G_RXfilter;
 extern unsigned short G_TXPWR;
-extern bool G_QO100;
-extern bool G_QO100_BAND_RX;
-extern bool SET_QO100;
+extern bool ShellyHF;             // 0 == OFF; 1 == on
+extern bool ShellySAT;     // 2 == 2m Band RX;
+extern bool isShellyHF;
+extern bool isShellySAT;
 extern int G_Sat;
 extern int G_Split;
 extern int G_ic705;
 extern int touchcalibrate;
 extern unsigned long debounceDelay;
 extern unsigned long debounceDelay1;
+extern const char* shellyHF_URL;
+extern const char* shellySAT_URL;
 // Weitere globale Variablen hier hinzufügen, falls erforderlich
 #ifdef WIFI
 extern WiFiUDP ntpUDP;

@@ -13,14 +13,26 @@ are down at the bottom of this file!
 #include "Display_functionen.h"
 #include "z_userprog.h"
 #include <CIVmaster.h> // CIVcmds.h wird automatisch zusätzlich eingebunden
+#include <ArduinoJson.h>
+#include <WiFi.h>
+#include <HTTPClient.h>
 
 // Definition der inline-Funktion
 // additional CI-V commands, which are only available for IC 705 (and not officially supported by CIVmasterLib)
-
+ constexpr uint8_t CIV_C_selVFO2_READ[]  = {2,0x26,0x00};  
 /*!*/
 uint16_t t_curr_last;
+CIVresult_t CIVresultLM;
+const String retValStr[7] = {
+  "CIV_OK",
+  "CIV_OK_DAV",
 
-
+  "CIV_NOK",
+  "CIV_HW_FAULT",
+  "CIV_BUS_BUSY",
+  "CIV_BUS_CONFLICT",
+  "CIV_NO_MSG"
+};
 // Radio database procedures ==================================================================
 
 //---------------------------------------------------------------------------------------------
@@ -192,8 +204,6 @@ void  CIV_getProcessAnswers() {
       if (CIVresultL.cmd[1]==CIV_C_F_SEND[1]) {   // operating frequency broadcast
         setFrequency(CIVresultL.value);
       }
-
-      //test VFO mode
     
       #ifdef modmode
       if (CIVresultL.cmd[1]==CIV_C_MOD_SEND[1]) { // ModMode
@@ -230,15 +240,16 @@ void  CIV_getProcessAnswers() {
       }
 
 
-
       #ifdef modmode
       // answer to query for ModMode received ...
       if (CIVresultL.cmd[1]==CIV_C_MOD_READ[1]) {
         CIVwaitForAnswer  = false;
+
         setModMode(radioModMode_t(CIVresultL.datafield[1]),radioFilter_t(CIVresultL.datafield[2]));
       } 
       #endif
       
+    
       //add by DL1BZ get TXPWR
       if ((CIVresultL.cmd[1]==CIV_C_RF_POW[1]) && 
           (CIVresultL.cmd[2]==CIV_C_RF_POW[2])) { // (this is a 2 Byte command!)
@@ -299,7 +310,7 @@ void  CIV_sendCmds() {
     }
 
   }
-
+      
   //-------------------------------------------------------------------------------------------
   // the other queries shall take place only if the radio is connected
   if (G_radioOn==RADIO_ON) {
@@ -323,6 +334,40 @@ void  CIV_sendCmds() {
       }
 
     }
+    // if (uint16_t(t_curr_lp - ts_25_sent) >= t_slowQuery) {  // ask the radio
+
+    //   if (CIVwaitForAnswer==false) { // ask only, if we currently are not waiting for the radio
+    //     CIVresultLM = civ.writeMsg(civAddr,CIV_C_selVFO_READ,CIV_D_NIX,CIV_wFast);
+    //     if (CIVresultLM.retVal<=CIV_NOK) {  // valid answer received 
+    //       if (CIVresultLM.retVal==CIV_OK_DAV) {// Data available
+    //         Serial.print(" value: elVFO1: "); Serial.println(CIVresultLM.value);
+    //         Serial.print(" datafield1: elVFO1: "); Serial.println(CIVresultLM.datafield[1]);
+    //         Serial.print(" datafield2: elVFO1: "); Serial.println(CIVresultLM.datafield[2]);
+    //       }
+    //     }
+    //     CIVwaitForAnswer  = true;
+    //     ts_CIVcmdSent     = t_curr_lp;  // store the time of the query
+    //     ts_25_sent       = t_curr_lp;
+    //   }
+
+    // }
+    // if (uint16_t(t_curr_lp - ts_26_sent) >= t_slowQuery) {  // ask the radio
+
+    //  if (CIVwaitForAnswer==false) { // ask only, if we currently are not waiting for the radio
+    //      CIVresultLM = civ.writeMsg (civAddr,CIV_C_selVFO2_READ,CIV_D_NIX,CIV_wFast);
+    //     if (CIVresultLM.retVal<=CIV_NOK) {  // valid answer received 
+    //       if (CIVresultLM.retVal==CIV_OK_DAV) {// Data available
+    //         Serial.print(" value: elVFO2"); Serial.println(CIVresultLM.value);
+    //         Serial.print(" datafield1: elVFO2"); Serial.println(CIVresultLM.datafield[1]);
+    //         Serial.print(" datafield2: elVFO2"); Serial.println(CIVresultLM.datafield[2]);
+    //       }
+    //     }
+    //     CIVwaitForAnswer  = true;
+    //     ts_CIVcmdSent     = t_curr_lp;  // store the time of the query
+    //     ts_26_sent       = t_curr_lp;
+    //   }
+
+    // }
     #ifdef modmode
     // slow poll of the ModMode, just to be on the safe side ..................................
     if (uint16_t(t_curr_lp - ts_Mod_sent) >= t_slowQuery) {  // ask the radio
@@ -333,7 +378,7 @@ void  CIV_sendCmds() {
         ts_CIVcmdSent     = t_curr_lp;  // store the time of the query
         ts_Mod_sent       = t_curr_lp;
       }
-
+      
     }
     #endif
 
@@ -363,3 +408,81 @@ byte get_Band(unsigned long frq) {
   }
   return NUM_BANDS;  // no valid band found -> return not defined
 }
+bool getShellyStatus(const char *url) {
+  // Überprüfen, ob die Verbindung zum WiFi besteht
+  if (WiFi.status() == WL_CONNECTED) {
+    // HTTP-Anfrage senden
+    HTTPClient http;
+    Serial.print("Senden einer HTTP-Anfrage an: ");
+    Serial.println(url);
+
+    http.begin(url);
+    int httpCode = http.GET();
+
+    if (httpCode > 0) {
+      // Antwort erhalten
+      String payload = http.getString();
+      Serial.println("Antwort erhalten!");
+      Serial.println(payload);
+
+      // JSON-Objekt erstellen und den Wert von "ison" extrahieren
+      DynamicJsonDocument doc(1024);
+      deserializeJson(doc, payload);
+
+      bool isOn = doc["ison"];
+      Serial.print("ISON-Status: ");
+      Serial.println(isOn);
+      return isOn;
+    } else {
+      Serial.print("Fehler beim Senden der Anfrage. HTTP-Fehlercode: ");
+      Serial.println(httpCode);
+      return false;
+    }
+
+    http.end();
+  }
+  return false;
+}
+void setTRXPWR (){
+
+}
+bool setShellyStatus(const char *url,String paonoff) {
+// Überprüfen, ob die Verbindung zum WiFi besteht
+  if (WiFi.status() == WL_CONNECTED) {
+    // Daten für die POST-Anfrage vorbereiten
+    String postData = paonoff;//"turn=on";
+    String getData = String(url) + "?" + paonoff;
+    // HTTP-Anfrage senden
+    HTTPClient http;
+    Serial.print("Senden einer POST-Anfrage an: ");
+    Serial.println(getData);
+
+    http.begin(getData);
+    http.addHeader("Content-Type", "application/x-www-form-urlencoded");
+
+    int httpCode = http.GET();
+
+    if (httpCode > 0) {
+      // Antwort erhalten
+      String payload = http.getString();
+      Serial.println("Antwort erhalten!");
+      Serial.println(payload);
+      // JSON-Objekt erstellen und den Wert von "ison" extrahieren
+      DynamicJsonDocument doc(1024);
+      deserializeJson(doc, payload);
+
+      bool isOn = doc["ison"];
+      Serial.print("ISON-Status: ");
+      Serial.println(isOn);
+      return isOn;
+    } else {
+      Serial.print("Fehler beim Senden der Anfrage. HTTP-Fehlercode: ");
+      Serial.println(httpCode);
+      return false;
+    }
+
+    http.end();
+  }
+  return false;
+}
+

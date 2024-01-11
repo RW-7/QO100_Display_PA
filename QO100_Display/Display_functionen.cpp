@@ -86,8 +86,8 @@ void Draw_TX() {
   //TX Topline
   tft.setFreeFont(NULL);  // Set default font
   tft.setTextSize(2);
-  tft.drawRoundRect(7, 2, 25, 20, 5, RED);  // X, Y, Breite, Höhe, abgerundete Ecken, Rahmenfarbe
-  tft.fillRect(2, 1, 65, 28, BLACK); //debug setting background
+  //tft.drawRoundRect(7, 2, 25, 20, 5, RED);  // X, Y, Breite, Höhe, abgerundete Ecken, Rahmenfarbe
+  tft.fillRect(2, 1, 40, 28, BLACK); //debug setting background
   tft.setTextColor(RED);
   tft.setCursor(7, 7);
   tft.print("TX");
@@ -103,42 +103,48 @@ void Draw_RX() {
   // RX Topline
   tft.setFreeFont(NULL);  // Set default font
   tft.setTextSize(2);
-  tft.drawRoundRect(7, 2, 25, 20, 5, WHITE);  // X, Y, Breite, Höhe, abgerundete Ecken, Rahmenfarbe
-  tft.fillRect(1, 1, 65, 28, BLACK); //debug setting background
+ // tft.drawRoundRect(7, 2, 25, 20, 5, WHITE);  // X, Y, Breite, Höhe, abgerundete Ecken, Rahmenfarbe
+  tft.fillRect(1, 1, 40, 28, BLACK); //debug setting background
   tft.setTextColor(WHITE);
   tft.setCursor(9, 7);
   tft.print("RX");
 }
 
 void Clear_Scr() {
-  tft.fillRect(0, 30, 240, 104, BLACK);
+  tft.fillRect(0, 30, 250, 104, BLACK);
 }
 
 void BT_Conn_Status(const char* read_Conn_Status) {
   const char* Conn_Yes = strstr(read_Conn_Status, "R_ON");
-  
+  Serial.println ("BT_Conn_Status");
   tft.setFreeFont(NULL);  // Set default font
   tft.setTextSize(2);
 
   if (read_Conn_Status == Conn_Yes) {
+    tft.drawRoundRect(0, 0, tft.width(), 30, 5, WHITE);    //with white border
+    tft.fillRect(50, 1, 250, 28, BLACK); //debug setting background
+    Serial.println ("Conn_Yes");
     //tft.fillRect(80, 1, 85, 28, MAROON);  // productive setting background
     tft.setTextColor(GREEN);
-    tft.setCursor(80, 7);
+    tft.setCursor(50, 7);
     tft.print("BT CAT");
     Clear_Scr();
     Draw_RX();
     drawButton();
   } else {
+    Serial.println ("Conn_NO");
+     tft.drawRoundRect(0, 0, tft.width(), 30, 5, WHITE);    //with white border.
     //tft.fillRect(80, 1, 155, 28, MAROON);  // productive setting background
     tft.setTextColor(RED);
-    tft.setCursor(80, 7);
+    tft.setCursor(50, 7);
     tft.print("BT CAT");
     tft.setTextColor(WHITE);
-    tft.setCursor(170, 7);
+    tft.setCursor(130, 7);
     tft.print("OFFLINE");
     Clear_Scr();  // clear screen
     tft.setCursor(0, 40);
     tft.print("Please pair\n\nyour ICOM IC-705\n\nvia Bluetooth !");
+    drawButton();
   }
 }
 
@@ -147,14 +153,16 @@ void BT_Conn_Status(const char* read_Conn_Status) {
 //    Show frequency in 'kHz' and band in 'Meters' text on TFT vk3pe
 //------------------------------------------------------------------
 void setTimeString() {
-  time_t utcTime = now();
-  String timeString = timeFormat(utcTime);  
+  timeClient.update();
+  
   tft.setFreeFont(NULL);  // Set font to GLCD
-  tft.fillRect(371, 7, 85, 28, BLACK);
-  tft.setTextSize(2);
-  tft.setCursor(371, 7);
+  tft.fillRect(330, 1, 140, 25, BLACK);
   tft.setTextColor(WHITE);
-  tft.print(timeString);
+  tft.setTextSize(2);
+  tft.setCursor(330, 7);
+  tft.print("UTC: ");
+   tft.setCursor(375, 7);
+  tft.print(timeClient.getFormattedTime());
 }
 void show_Meters(void) {
     
@@ -175,12 +183,12 @@ void show_Mode(uint8_t newModMode, uint8_t newRXfilter) {
   tft.setFreeFont(NULL);  // Set font to GLCD
   // tft.setFreeFont(&FreeSans9pt7b);
   // tft.setFreeFont(&Tiny3x3a2pt7b);
-  tft.fillRect(251, 7, 85, 28, BLACK);  //erase previous freq   vk3pe x,y,width,height,colour 10,40,137,40
+  tft.fillRect(225, 1, 90, 24, BLACK);  //erase previous freq   vk3pe x,y,width,height,colour 10,40,137,40
   tft.setTextSize(2);
-  tft.setCursor(251, 7);
+  tft.setCursor(225, 7);
   tft.setTextColor(YELLOW);
   tft.print(modModeStr[newModMode]);
-  tft.setCursor(300, 7);
+  tft.setCursor(270, 7);
   tft.print(FilStr[newRXfilter]);
 
 
@@ -193,7 +201,7 @@ void user_TXPWR(unsigned short getTXPWR) {
   tft.setFreeFont(NULL);  // Set default font
   tft.setTextSize(2);
   //tft.fillRect(170, 1, 65, 28, MAROON);  // productive setting background
-  tft.fillRect(170, 1, 80, 28, BLACK); //debug setting background
+  tft.fillRect(140, 1, 64, 28, BLACK); //debug setting background
   tft.setTextColor(WHITE);  // print TXPWR white if output power < 4W
   if (getTXPWR > 101) {
     tft.setTextColor(YELLOW);  // print TXPWR yellow if out > 4W for attention of PA max. input power
@@ -201,7 +209,7 @@ void user_TXPWR(unsigned short getTXPWR) {
   if (getTXPWR > 128) {
     tft.setTextColor(ORANGE);  // print TXPWR orange if out > 5W for attention of PA max. input power
   }
-  tft.setCursor(170, 7);
+  tft.setCursor(140, 7);
   tft.print(0.1 * TXPWR_W, 1);  //output TXPWR as Watt with one decimal digit
   tft.println("W");             // add W for display TXPWR value
 }
@@ -275,7 +283,7 @@ void set_LCD_Curennt_TX(unsigned long frequency) { // Rechts Oben
     tft.setTextColor(YELLOW);  //-
     tft.setFreeFont(&FreeSansBold9pt7b);
     tft.setTextSize(2);
-    if(G_currentBand == NUM_BANDS ){
+    if(G_subVFOSplitBand == NUM_BANDS ){
       tft.setTextColor(RED); 
     }
     tft.print(band2string[G_subVFOSplitBand]);  //-
@@ -298,7 +306,7 @@ void set_LCD_Curennt_TX(unsigned long frequency) { // Rechts Oben
 
 void set_LCD_SAT_RX(unsigned long long frequency) { //Links Unten
     unsigned long freq_kHz;
-
+ Serial.println ("set_LCD_SAT_RX");
   freq_kHz = frequency / 1000;       // frequency is now in kHz
   G_currentDownBand = get_Band(freq_kHz);  // get band according the current frequency
   if(G_Sat == 1){
@@ -315,7 +323,7 @@ void set_LCD_SAT_RX(unsigned long long frequency) { //Links Unten
     tft.print(0.000001 * frequency, 5);  //show Frequency in MHz with 5 decimal digits
 
     tft.setCursor(5, 225);                //-
-    tft.fillRect(0, 190, 105, 55, BLACK);  //-erase   x,y,width, height
+    tft.fillRect(0, 190, 110, 55, BLACK);  //-erase   x,y,width, height
     tft.drawRoundRect(0, 190, 105, 55, 5, WHITE);
     tft.setTextColor(YELLOW);  //-
     tft.setFreeFont(&FreeSansBold9pt7b);
@@ -334,14 +342,15 @@ void set_LCD_SAT_RX(unsigned long long frequency) { //Links Unten
     tft.print("DownConv.");
   }else{
     tft.fillRoundRect(0, 140, tft.width()/2-1, 40, 5, BLACK);
-    tft.fillRect(0, 190, 105, 55, BLACK);  //-erase   x,y,width, height
+    tft.fillRect(0, 190, 110, 55, BLACK);  //-erase   x,y,width, height
     tft.drawRoundRect(0, 190, 105, 55, 5, BLACK);
-    tft.fillRect(105, 190, 105, 55, BLACK);  //erase previous freq   vk3pe x,y,width,height,colour 10,40,137,40
+    tft.fillRect(105, 190, 110, 55, BLACK);  //erase previous freq   vk3pe x,y,width,height,colour 10,40,137,40
     tft.drawRoundRect(105, 190, 85, 55, 5, BLACK);
   }
 }
 void set_LCD_SAT_TX(unsigned long frequency) { //Rechts Unten
   unsigned long freq_kHz;
+  Serial.println ("set_LCD_SAT_TX");
   if( G_Sat == 1 && G_Split == 1) {
     freq_kHz = G_Dipslay_TX_frequency / 1000;       // frequency is now in kHz
     G_subVFOUPBand = get_Band(freq_kHz);  // get band according the current frequency
@@ -422,24 +431,4 @@ void userPTT(uint8_t newState) {
     digitalWrite(PTTpinUHF, newState);
   }
 #endif
-}
-String timeFormat(time_t timeValue) {
-  // Zeit in Stunden, Minuten und Sekunden aufteilen
-  int hours = hour(timeValue);
-  int minutes = minute(timeValue);
-  int seconds = second(timeValue);
-
-  // Erzeuge eine Zeichenkette im HH:MM:SS-Format
-  String formattedTime = String(hours) + ":" + twoDigits(minutes) + ":" + twoDigits(seconds);
-
-  return formattedTime;
-}
-
-String twoDigits(int number) {
-  // Funktion zur Formatierung von Zahlen in zwei Stellen
-  if (number < 10) {
-    return "0" + String(number);
-  } else {
-    return String(number);
-  }
 }

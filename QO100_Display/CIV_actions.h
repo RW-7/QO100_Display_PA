@@ -25,7 +25,9 @@ void setRXTX(uint8_t newState);
 void setFrequency(unsigned long newFrequency);
 void setVFOMODE(unsigned long newVFO);
 void setTXPWR(unsigned short newTXPWR);
-
+bool getShellyStatus(const char *url);
+bool setShellyStatus(const char *url,String  paonoff);
+void setTRXPWR ();
 #ifdef modmode
 void setModMode(radioModMode_t newModMode, radioFilter_t newRXfilter);
 #endif

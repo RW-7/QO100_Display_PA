@@ -35,6 +35,7 @@ Hinweis: Bitte seien Sie vorsichtig, wenn Sie RX/TX-Informationen als PTT für P
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 // Datei "settings.h" einbinden (Standardmäßig ist der Debug-Modus aktiviert) !
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#include "defines.h" 
 #include "globals.h"
 #include "Display.h"
 #include "Touch.h"
@@ -90,9 +91,15 @@ void setup() {
   // Hinweis: Im fastPTT-Modus kann dies signifikant langsamer sein, da dies in diesem Fall die PTT-Verzögerung nicht beeinflusst
   init_delayMeas; // Debugging auf ESP32: PTT-Verzögerungsmessung einrichten
   
-  init_TFT();
+
   //!// Setzen Sie Ihren Setup-Code (unabhängig von Civ) hier ein ... oder legen Sie ihn in die Datei "z_userprog.ino"
   //userSetup();
+  #ifdef WIFI
+   setup_wifi();
+  #endif
+   Serial.println("setup_wifi ENDE");
+     init_TFT();
+  Serial.println("init_TFT ENDE");
   // Baseloop-Timer initialisieren...
   t_curr_lp = millis();
   ts_last_lp = t_curr_lp;
@@ -123,6 +130,18 @@ void loop() {
     if (t_curr_lp - lastDebounceTime1 > debounceDelay1) {
       lastDebounceTime1 = t_curr_lp;
       setTimeString();
+      //ShellyHF = getShellyStatus(shellyHF_URL);
+      // if (ShellyHF) {
+      // touch_button(buttonX[2], buttonY,buttonLabel[2], RED);
+      // }else{
+      //   touch_button(buttonX[2], buttonY,buttonLabel[2], GREEN);
+      // }
+      // ShellySAT = getShellyStatus(shellySAT_URL);
+      // if (ShellySAT) {
+      // touch_button(buttonX[4], buttonY,buttonLabel[4], RED);
+      // }else{
+      //   touch_button(buttonX[4], buttonY,buttonLabel[4], GREEN);
+      // }
     }
     // Wenn Sie Touch-Funktionen implementiert haben
     touchloop();
