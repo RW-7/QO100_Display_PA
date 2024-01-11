@@ -136,7 +136,7 @@ void userFrequency(unsigned long newFrequency) {
       Serial.print ("G_RXTX:"); Serial.println (G_RXTX);
     #endif
     civ.writeMsg (civAddr, CIV_D_Splitt_ON, CIV_D_NIX , CIV_wFast);
-  }else{
+  }else if ( G_RXTX==0){
     civ.writeMsg (civAddr, CIV_D_Splitt_OFF, CIV_D_NIX , CIV_wFast);
   } 
   
