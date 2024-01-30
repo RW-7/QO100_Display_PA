@@ -1,31 +1,3 @@
-/* 
-IC705toPA  - W.Dilling/DK8RW
-
-This device is based on a ESP32 D1 board and shall connect to a standalone IC705 via BT in order 
-to get the current frequency from the radio.
-This frequency info can be used in multiple ways, e.g. control of an external PA (lowpass filter settings)
-
-Tasks: 
-- get the current frequency of the radio and send it via 4 HW-lines (binary coded) to the PA
-
-
-Notes: 
-- Please make sure, that in the menu of IC705 the "Transceive" function is set to ON ... otherwise it
-  simply doesn't work.
-
-- for a first check it is worth watching the output of the program in Serial Monitor.
-  If everything is fine, you can suppress this output by setting the "debug" switch in
-  comments (file a_defines.h). This switch is uncommented by default for obvious reasons ;-)
-
-- if you are using external inverting drivers, pls. make sure that the switch "invDriver"
-  is uncommented in a_defines.h
-
-- pls check (and correct, if necessary) the HW Pin numbers in use (file a_defines.h)
-
-- This example has been successfully tested with a PA HLVA 1k3Q from RFpower by Rainer, DK1RS
-
-*/
-
 /* includes -----------------------------------------------------------------*/
 
 #include "a_defines.h"
@@ -50,7 +22,6 @@ uint16_t lpCnt = 0;
 CIVresult_t CIVresultL;
 
 uint8_t currentBand = NUM_BANDS;  // not defined
-uint8_t currentBCDsetting = 0xff; // 0xff == undefined
 
 bool    freqReceived = false; // initially, no frequency info has been received from the radio
 uint8_t freqPoll     = 0;     // number of initial frequency querys in addtion to the broadcast info
@@ -88,34 +59,7 @@ constexpr uint8_t band2BCD [NUM_BANDS+1] = {
   0x01, 0x02, 0x03, 0x03,  0x04,  0x05,  0x06,  0x07,  0x08,  0x09,  0x0A, 0x00
 };
 
-//------------------------------------------------------------
-// set the bitpattern in the HW
 
-void set_HW (uint8_t BCDsetting) {
-
-  digitalWrite  (P_BCD0, ( BCDsetting     & 0b00000001));
-  digitalWrite  (P_BCD1, ((BCDsetting>>1) & 0b00000001));
-  digitalWrite  (P_BCD2, ((BCDsetting>>2) & 0b00000001));
-  digitalWrite  (P_BCD3, ((BCDsetting>>3) & 0b00000001));
-
-#ifdef debug
-  // Test output to control the proper functioning:
-  Serial.print ("Pins ");
-  Serial.print (P_BCD3); Serial.print (' '); Serial.print (P_BCD2); Serial.print (' ');
-  Serial.print (P_BCD1); Serial.print (' '); Serial.print (P_BCD0); Serial.print (" : "); 
-  Serial.print (((BCDsetting>>3) & 0b00000001),BIN);
-  Serial.print (' ');
-  Serial.print (((BCDsetting>>2) & 0b00000001),BIN);
-  Serial.print (' ');
-  Serial.print (((BCDsetting>>1) & 0b00000001),BIN);
-  Serial.print (' ');
-  Serial.print (( BCDsetting     & 0b00000001),BIN);
-  Serial.println (' ');
-#endif
-
-}
-
-//-----------------------------------------------------------------------------------------
 // get the bandnumber matching to the frequency (in kHz)
 
 byte get_Band(unsigned long frq){
@@ -151,12 +95,6 @@ void set_PAbands(unsigned long frequency) {
   // "~" inverts the bitpattern!  (0 -> 1 ; 1 -> 0)
   // this can be used to compensate the effect of inverting HW buffers
 
-#ifdef invDriver 
-  set_HW ( ~ band2BCD[currentBand] );
-#else
-  set_HW (   band2BCD[currentBand] );
-#endif
-
 }
 
 //==========  General initialization  of  the device  =========================================
@@ -173,23 +111,7 @@ void setup() {
   civ.setupp(true);                   // initialize the civ object/module (true means "use BT")
   civ.registerAddr(CIV_ADDR_705);     // tell civ, that this is a valid address to be used
 
-  // set the used HW pins (see defines.h!) as output and set it to 0V (at the Input of the PA!!) initially
-  pinMode       (P_BCD0, OUTPUT);
-  pinMode       (P_BCD1, OUTPUT);
-  pinMode       (P_BCD2, OUTPUT);
-  pinMode       (P_BCD3, OUTPUT);
-
-#ifdef invDriver 
-  digitalWrite  (P_BCD0, HIGH);
-  digitalWrite  (P_BCD1, HIGH);
-  digitalWrite  (P_BCD2, HIGH);
-  digitalWrite  (P_BCD3, HIGH);
-#else
-  digitalWrite  (P_BCD0, LOW);
-  digitalWrite  (P_BCD1, LOW);
-  digitalWrite  (P_BCD2, LOW);
-  digitalWrite  (P_BCD3, LOW);
-#endif
+ 
 
   time_current_baseloop = millis();
   time_last_baseloop = time_current_baseloop;
