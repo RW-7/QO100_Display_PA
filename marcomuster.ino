@@ -144,7 +144,22 @@ void loop() {
           set_PAbands(CIVresultL.value);
 
         } // command CIV_C_F_SEND or CIV_C_F_READ received  
-
+        if ((CIVresultL.cmd[1]==CIV_C_TX[1]) && 
+          (CIVresultL.cmd[2]==CIV_C_TX[2])) { // (this is a 2 Byte command!)
+      
+        #ifndef fastPTT
+       //   setRXTX(CIVresultL.datafield[1]);  // store it away and do whatever you want with that ...
+        #endif
+        }
+       if (CIVresultL.cmd[1]==CIV_C_MOD_READ[1]) {
+     
+       // setModMode(radioModMode_t(CIVresultL.datafield[1]),radioFilter_t(CIVresultL.datafield[2]));
+      } 
+      if ((CIVresultL.cmd[1]==CIV_C_RF_POW[1]) && 
+          (CIVresultL.cmd[2]==CIV_C_RF_POW[2])) { // (this is a 2 Byte command!)
+        
+        //setTXPWR(CIVresultL.value);        
+      }
       } // Data available
     } // valid answer received
 
@@ -156,6 +171,9 @@ void loop() {
       civ.writeMsg (CIV_ADDR_705, CIV_C_F_READ, CIV_D_NIX, CIV_wChk);
       freqPoll++;
       Serial.print ("P ");
+      civ.writeMsg (CIV_ADDR_705,CIV_C_TX,CIV_D_NIX,CIV_wFast);
+      civ.writeMsg (CIV_ADDR_705,CIV_C_MOD_READ,CIV_D_NIX,CIV_wFast);
+      civ.writeMsg (CIV_ADDR_705,CIV_C_RF_POW,CIV_D_NIX,CIV_wFast);
     }
 
     
