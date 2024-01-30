@@ -2,7 +2,7 @@
 #include "globals.h"
 #include "Display.h"
 #ifdef LCD
-
+#include <Arduino.h>
 #include <TFT_eSPI.h>       //using this LIB now.  https://github.com/Bodmer/TFT_eSPI 
 
 //-----------------------------------------------------------------------------------------
@@ -41,7 +41,8 @@ void init_TFT(void)
     tft.setRotation(3);
     //tft.fillRoundRect(0, 0, tft.width(), 30, 5, MAROON);   // background for screen title
     tft.drawRoundRect(0, 0, tft.width(), 30, 5, WHITE);    //with white border.
- 
+    Draw_RX();
+    drawButton();
     #ifdef useTouch
      
     tft.setTouch(calData);

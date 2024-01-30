@@ -2,7 +2,7 @@
 
 #ifndef TOUCH_H
 #define TOUCH_H
-
+#include "globals.h"
 #include <TFT_eSPI.h>  // Stelle sicher, dass du die richtige Bibliothek eingebunden hast
 
 // Externe Deklaration der Touch-Variablen

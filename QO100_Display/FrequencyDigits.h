@@ -2,7 +2,6 @@
 #ifndef FrequencyDigits_h
 #define FrequencyDigits_h
 #include "globals.h"
-#include <Arduino.h>
 
 class FrequencyDigits {
 public:
