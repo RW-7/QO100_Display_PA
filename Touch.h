@@ -93,7 +93,16 @@ void touchloop() {
   }
     if (touched) {
       #ifdef debug
-      
+        Serial.print( "Data x " );
+        Serial.println( touchX );
+        Serial.print( "Data y " );
+        Serial.println( touchY );
+        Serial.print( "G_Sat x " );
+        Serial.println( G_Sat );
+        Serial.print( "G_Split x " );
+        Serial.println( G_Split );
+        Serial.print( "ShellyHF x " );
+        Serial.println( ShellyHF );
       #endif
     }
   #endif

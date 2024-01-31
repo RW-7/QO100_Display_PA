@@ -20,11 +20,8 @@ void setup() {
     delay(20);
     Serial.println (VERSION_STRING);
   #endif
-   CIV_setup(); 
-   init_TFT();
-
- 
-
+  CIV_setup(); 
+  init_TFT();
   time_current_baseloop = millis();
   time_last_baseloop = time_current_baseloop;
   

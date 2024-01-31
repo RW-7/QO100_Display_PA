@@ -46,6 +46,13 @@ enum onOff_t:uint8_t {
   NDEF
 };
 
+bool ShellyHF;   // 0 == OFF; 1 == on
+bool ShellySAT;  // 2 == 2m Band RX;
+bool isShellyHF;
+bool isShellySAT;
+bool LCD_Curennt_RX = 1; // 0 == RX; 1 == TX on
+int G_Sat;
+int G_Split;
 // get the bandnumber matching to the frequency (in kHz)
 
 byte get_Band(unsigned long frq){

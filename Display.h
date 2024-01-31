@@ -147,7 +147,7 @@ void init_TFT(void)
     Draw_RX(); // RX Button
     set_LCD_Curennt_RX(0); // Frequenzanzeige links oben
     drawButton(); // Touch Buttons mit Label 
-    tft.setTouch(calData);
+    //tft.setTouch(calData);
 
   #endif
 }
