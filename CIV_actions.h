@@ -3,6 +3,7 @@
 /* includes -----------------------------------------------------------------*/
 #include "globals.h"
 #include <CIVmaster.h>  // CIVcmds.h is automatically included in addition
+#include "Display.h"
 //-------------------------------------------------------------------------------
 // create the civ and ICradio objects in use
 

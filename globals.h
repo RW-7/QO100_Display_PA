@@ -1,7 +1,7 @@
 #ifndef GLOBALS_H
 #define GLOBALS_H
 #include "defines.h"
-
+int touchcalibrate = 0;
 
 
 // tables for band selection and bittpattern calculation

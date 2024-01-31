@@ -41,7 +41,10 @@ void loop() {
     CIV_getProcessAnswers();
     // Dann Befehle an das Radio schreiben (falls möglich und erforderlich)
     CIV_sendCmds();
-
+    
+    if (touchcalibrate){
+      touch_calibrate();
+    }
     time_last_baseloop = time_current_baseloop;
 	} // if BASELOOP_TICK
   
