@@ -6,25 +6,24 @@
 #include "Touch.h"
 
 /* timer  variables */
-unsigned long time_current_baseloop;       // temporary time of the baseloop entry for calculations
-unsigned long time_last_baseloop;          // will be updated at the end of every baseloop run
+unsigned long time_current_baseloop;  // temporary time of the baseloop entry for calculations
+unsigned long time_last_baseloop;     // will be updated at the end of every baseloop run
 //-----------------------------------------------------------------------------------------
 
 //==========  General initialization  of  the device  =========================================
 
 void setup() {
 
-  #ifdef debug                        // initialize the serial interface (for debug messages)
-    Serial.begin(debugBdRate);
-    Serial.println("");
-    delay(20);
-    Serial.println (VERSION_STRING);
-  #endif
-  CIV_setup(); 
+#ifdef debug  // initialize the serial interface (for debug messages)
+  Serial.begin(debugBdRate);
+  Serial.println("");
+  delay(20);
+  Serial.println(VERSION_STRING);
+#endif
+  CIV_setup();
   init_TFT();
   time_current_baseloop = millis();
   time_last_baseloop = time_current_baseloop;
-  
 }
 
 //============================  main  procedure ===============================================
@@ -32,7 +31,7 @@ void setup() {
 void loop() {
 
   time_current_baseloop = millis();
-  
+
   if ((time_current_baseloop - time_last_baseloop) > BASELOOP_TICK) {
     // Radio Abfrage Starten
     CIV_getProcessAnswers();
@@ -40,10 +39,10 @@ void loop() {
     CIV_sendCmds();
     // Touch abfrage
     touchloop();
-    if (touchcalibrate){
+    if (touchcalibrate) {
       touch_calibrate();
     }
     time_last_baseloop = time_current_baseloop;
-	} // if BASELOOP_TICK
-  
-} // end loop
+  }  // if BASELOOP_TICK
+
+}  // end loop
