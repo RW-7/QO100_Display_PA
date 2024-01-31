@@ -16,6 +16,10 @@ CIVresult_t CIVresultL;
 bool freqReceived = false;  // initially, no frequency info has been received from the radio
 uint8_t freqPoll = 0;       // number of initial frequency querys in addtion to the broadcast info
 uint16_t lpCnt = 0;
+constexpr uint8_t CIV_C_VFO_DATA_READ[]  = {1,0x26};  
+constexpr uint8_t CIV_D_VFOA_READ[]  = {1,0x00}; 
+constexpr uint8_t CIV_D_VFOB_READ[]  = {1,0x01}; 
+constexpr uint8_t CIV_C_SPLIT_READ[]  = {1,0x0F}; 
 //------------------------------------------------------------
 // process the frequency received from the radio
 
@@ -35,13 +39,14 @@ void set_PAbands(unsigned long frequency) {
   Serial.println(band2string[currentBand]);
 #endif
 }
+
 //Antworten vom Radio
 void CIV_getProcessAnswers() {
   // ----------------------------------  check, whether there is something new from the radio
   CIVresultL = civ.readMsg(CIV_ADDR_705);
   if (CIVresultL.retVal <= CIV_NOK) {  // valid answer received !
 #ifdef debug
-    Serial.print('.');
+    //Serial.print('.');
 #endif
     if (CIVresultL.retVal == CIV_OK_DAV) {  // Data available
 
@@ -53,12 +58,56 @@ void CIV_getProcessAnswers() {
         // send the band info to the PA:
         set_PAbands(CIVresultL.value);
 
-      }                                                                                // command CIV_C_F_SEND or CIV_C_F_READ received
-      if ((CIVresultL.cmd[1] == CIV_C_TX[1]) && (CIVresultL.cmd[2] == CIV_C_TX[2])) {  // (this is a 2 Byte command!)
+      }  
+      if ((CIVresultL.cmd[1] == CIV_C_VFO_DATA_READ[1])) {  // command CIV_C_F_READ received
+        if(VFOAMode!=CIVresultL.datafield[1]){
+          VFOAMode=CIVresultL.datafield[1];
+          #ifdef debug
+            Serial.print("CIV_C_VFO_DATA_READ 1:"); Serial.println(CIVresultL.datafield[1]);//Mode
+          #endif
+        }
+        if(VFOAModeData!=CIVresultL.datafield[2]){
+          VFOAModeData=CIVresultL.datafield[2];
+          #ifdef debug
+            Serial.print("CIV_C_VFO_DATA_READ 2:"); Serial.println(CIVresultL.datafield[2]);//Data
+          #endif
+        }
+        if(VFOAFilter!=CIVresultL.datafield[3]){
+          VFOAFilter=CIVresultL.datafield[3];
+          #ifdef debug
+            Serial.print("CIV_C_VFO_DATA_READ 3:"); Serial.println(CIVresultL.datafield[3]); //Filter
+          #endif
+        }
 
-#ifndef fastPTT
+      }                                                                                // command CIV_C_F_SEND or CIV_C_F_READ received
+      if ((CIVresultL.cmd[1] == CIV_C_TX[1])) {  // (this is a 2 Byte command!) // && (CIVresultL.cmd[2] == CIV_C_TX[2])
+      if(is_RXTX!=CIVresultL.datafield[1]){
+        is_RXTX=CIVresultL.datafield[1];
+         //   setRXTX(CIVresultL.datafield[1]);  // store it away and do whatever you want with that ...
+        #ifdef debug
+          Serial.print("CIV_C_TX1:"); Serial.println(CIVresultL.datafield[1]);
+          Serial.print("CIV_C_TX3:"); Serial.println(CIVresultL.datafield[3]);
+        #endif
+      }
+       
+       
+      }
+      if ((CIVresultL.cmd[1] == CIV_C_SPLIT_READ[1])) {  // (this is a 2 Byte command!)
+      if(is_SPLIT!=CIVresultL.value){
+        is_SPLIT=CIVresultL.value;
+        #ifdef debug
+          Serial.print("CIV_C_SPLIT_READ Value:"); Serial.println(CIVresultL.value);
+          Serial.print("CIV_C_SPLIT_READ 1:"); Serial.println(CIVresultL.datafield[1]);
+          Serial.print("CIV_C_SPLIT_READ 2:"); Serial.println(CIVresultL.datafield[2]);
+          Serial.print("CIV_C_SPLIT_READ 3:"); Serial.println(CIVresultL.datafield[3]);
+          Serial.print("CIV_C_SPLIT_READ 4:"); Serial.println(CIVresultL.datafield[4]);
+          Serial.print("CIV_C_SPLIT_READ 5:"); Serial.println(CIVresultL.datafield[5]);
+          Serial.print("CIV_C_SPLIT_READ 6:"); Serial.println(CIVresultL.datafield[6]);
+          Serial.print("CIV_C_SPLIT_READ 7:"); Serial.println(CIVresultL.datafield[7]);
+        #endif
         //   setRXTX(CIVresultL.datafield[1]);  // store it away and do whatever you want with that ...
-#endif
+      }
+        
       }
       if (CIVresultL.cmd[1] == CIV_C_MOD_READ[1]) {
 
@@ -84,8 +133,15 @@ void CIV_sendCmds() {
     civ.writeMsg(CIV_ADDR_705, CIV_C_TX, CIV_D_NIX, CIV_wFast);
     civ.writeMsg(CIV_ADDR_705, CIV_C_MOD_READ, CIV_D_NIX, CIV_wFast);
     civ.writeMsg(CIV_ADDR_705, CIV_C_RF_POW, CIV_D_NIX, CIV_wFast);
+    civ.writeMsg(CIV_ADDR_705, CIV_C_VFO_DATA_READ, CIV_D_NIX, CIV_wFast);
+    civ.writeMsg (CIV_ADDR_705, CIV_C_SPLIT_READ, CIV_D_NIX , CIV_wFast);
   }
   lpCnt++;
+  civ.writeMsg(CIV_ADDR_705, CIV_C_TX, CIV_D_NIX, CIV_wFast);
+    civ.writeMsg(CIV_ADDR_705, CIV_C_MOD_READ, CIV_D_NIX, CIV_wFast);
+    civ.writeMsg(CIV_ADDR_705, CIV_C_RF_POW, CIV_D_NIX, CIV_wFast);
+    civ.writeMsg(CIV_ADDR_705, CIV_C_VFO_DATA_READ, CIV_D_VFOA_READ, CIV_wFast);
+    civ.writeMsg (CIV_ADDR_705, CIV_C_SPLIT_READ, CIV_D_NIX , CIV_wFast);
 }
 
 void CIV_setup() {

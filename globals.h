@@ -45,11 +45,16 @@ enum onOff_t : uint8_t {
   ON = 1,
   NDEF
 };
+uint8_t VFOAMode = 0;
+uint8_t VFOAFilter = 0;
+uint8_t VFOAModeData = 0;
 
 bool ShellyHF;   // 0 == OFF; 1 == on
 bool ShellySAT;  // 2 == 2m Band RX;
 bool isShellyHF;
 bool isShellySAT;
+bool is_RXTX = 0;
+bool is_SPLIT = 0;
 bool LCD_Curennt_RX = 1;  // 0 == RX; 1 == TX on
 int G_Sat;
 int G_Split;

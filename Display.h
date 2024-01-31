@@ -1,6 +1,7 @@
 #ifndef DISPLAY_H
 #define DISPLAY_H
 #include "globals.h"
+#include <SPI.h>
 #include <TFT_eSPI.h>
 //-----------------------------------------------------------------------------------------
 //for TFT

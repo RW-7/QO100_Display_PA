@@ -5,15 +5,15 @@
 unsigned long debounceDelay = 500;
 unsigned long debounceDelay1 = 1000;
 unsigned long lastDebounceTime = 0;
-void touchloop() {
+void touchloop(void) {
 
  #ifdef useTouch
- // bool touched = tft.getTouch(&touchX, &touchY, 600);
+ bool touched = tft.getTouch(&touchX, &touchY,1000);
  
   unsigned long currentTime = millis();
 
- // if (touched && currentTime - lastDebounceTime > debounceDelay) {
-if (currentTime - lastDebounceTime > debounceDelay) {
+ if (touched && currentTime - lastDebounceTime > debounceDelay) {
+// if (currentTime - lastDebounceTime > debounceDelay) {
     lastDebounceTime = currentTime;
     // Überprüfe, welcher Button berührt wurde
     int buttonCount = sizeof(buttonX) / sizeof(buttonX[0]);
