@@ -3,14 +3,14 @@
 #include "globals.h"
 #include "Display.h"
 unsigned long debounceDelay = 500;
-unsigned long debounceDelay1 = 1000;
+
 unsigned long lastDebounceTime = 0;
 void touchloop(void) {
 
  #ifdef useTouch
  bool touched = tft.getTouch(&touchX, &touchY,1000);
  
-  unsigned long currentTime = millis();
+
 
  if (touched && currentTime - lastDebounceTime > debounceDelay) {
 // if (currentTime - lastDebounceTime > debounceDelay) {

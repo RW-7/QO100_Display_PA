@@ -35,12 +35,15 @@ constexpr uint8_t CIV_C_SPLIT_READ[]  = {1,0x0F};
 //------------------------------------------------------------
 // process the frequency received from the radio
 
-void set_PAbands(unsigned long frequency) {
+void set_Frequenz(unsigned long frequency) {
   unsigned long freq_kHz;
-
   freq_kHz = frequency / 1000;       // frequency is now in kHz
-  currentBand = get_Band(freq_kHz);  // get band according the current frequency
+  G_currentBand = get_Band(freq_kHz);  // get band according the current frequency
   set_LCD_Curennt_RX(frequency);
+  if(is_SPLIT == true){
+
+  }
+  
 #ifdef debug
   // Test-output to serial monitor:
   Serial.print("Frequency: ");
@@ -48,7 +51,7 @@ void set_PAbands(unsigned long frequency) {
   Serial.print("  Band: ");
   Serial.print(currentBand);
   Serial.print("  Band LCD: ");
-  Serial.println(band2string[currentBand]);
+  Serial.println(band2string[G_currentBand]);
 #endif
 }
 bool getShellyStatus(const char *url) {
@@ -125,6 +128,11 @@ bool setShellyStatus(const char *url,String paonoff) {
   }
   return false;
 }
+void updateTimeString() {
+  timeClient.update();
+  utc_time=timeClient.getFormattedTime();
+  setTimeString(utc_time);
+}
 //Antworten vom Radio
 void CIV_getProcessAnswers() {
   // ----------------------------------  check, whether there is something new from the radio
@@ -141,7 +149,7 @@ void CIV_getProcessAnswers() {
         freqReceived = true;
 
         // send the band info to the PA:
-        set_PAbands(CIVresultL.value);
+        set_Frequenz(CIVresultL.value);
 
       }  
       if ((CIVresultL.cmd[1] == CIV_C_VFO_DATA_READ[1])) {  // command CIV_C_F_READ received
@@ -168,6 +176,11 @@ void CIV_getProcessAnswers() {
       if ((CIVresultL.cmd[1] == CIV_C_TX[1])) {  // (this is a 2 Byte command!) // && (CIVresultL.cmd[2] == CIV_C_TX[2])
       if(is_RXTX!=CIVresultL.datafield[1]){
         is_RXTX=CIVresultL.datafield[1];
+        if(is_RXTX == 1){
+          Draw_TX();
+        }else{
+          Draw_RX();
+        }
          //   setRXTX(CIVresultL.datafield[1]);  // store it away and do whatever you want with that ...
         #ifdef debug
           Serial.print("CIV_C_TX1:"); Serial.println(CIVresultL.datafield[1]);
@@ -247,7 +260,7 @@ void setup_wifi() {
     }
   }
   timeClient.begin();
-  extern WiFiClient client;  // Deklaration der globalen Variable
+  WiFiClient client;  // Deklaration der globalen Variable
   Serial.println("\nConnected to the WiFi network");
   Serial.print("Local ESP32 IP: ");
   Serial.println(WiFi.localIP());

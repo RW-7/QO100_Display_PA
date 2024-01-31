@@ -18,10 +18,20 @@ const String buttonLabel[6] = {
 };
 const char* shellyHF_URL = "http://192.168.4.197/relay/0";
 const char* shellySAT_URL = "http://192.168.4.78/relay/0";
-
+String utc_time;
+  unsigned long currentTime = millis();
+  unsigned long setZeitabfrage = 1000;
 //*************************************************************//*************************************************************
 // tables for band selection and bittpattern calculation
 uint8_t currentBand = NUM_BANDS;  //
+unsigned long G_frequency = 0;        // Operating frequency in [Hz]
+unsigned long G_SPLIT_frequency = 0;          // Operating frequency in [Hz]
+unsigned long long G_Dipslay_RX_frequency = 0;      // Operating frequency in [Hz]
+unsigned long G_Dipslay_TX_frequency = 0;      // Operating frequency in [Hz]
+uint8_t G_currentBand;
+uint8_t G_subVFOSplitBand;  // TX Split
+uint8_t G_currentDownBand; // RX Upconverter
+uint8_t G_subVFOUPBand; //TX Upconverter
 // lower limits[kHz] of the bands:
 constexpr unsigned long lowlimits[NUM_BANDS] = {
   1000, 2751, 4501, 6001, 8501, 13001, 16001, 19501, 23001, 26001, 35001, 144000, 430000, 1240000, 2320000, 10450000
@@ -60,8 +70,11 @@ bool isShellySAT;
 bool is_RXTX = 0;
 bool is_SPLIT = 0;
 bool LCD_Curennt_RX = 1;  // 0 == RX; 1 == TX on
-int G_Sat;
-int G_Split;
+int G_Sat = 0;
+int G_Split = 0;
+String timeFormat(time_t timeValue);
+
+
 // get the bandnumber matching to the frequency (in kHz)
 
 byte get_Band(unsigned long frq) {

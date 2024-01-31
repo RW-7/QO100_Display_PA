@@ -20,9 +20,10 @@ void setup() {
   delay(20);
   Serial.println(VERSION_STRING);
 #endif
+  setup_wifi();
   CIV_setup();
   init_TFT();
-  setup_wifi();
+
   time_current_baseloop = millis();
   time_last_baseloop = time_current_baseloop;
 }
@@ -43,6 +44,11 @@ void loop() {
     if (touchcalibrate) {
       touch_calibrate();
     }
+ 
+   if (time_current_baseloop - time_last_baseloop > setZeitabfrage) {  
+    updateTimeString();
+   }
+
     time_last_baseloop = time_current_baseloop;
   }  // if BASELOOP_TICK
 

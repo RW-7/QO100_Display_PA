@@ -55,25 +55,38 @@ void set_LCD_Curennt_RX(unsigned long frequency) {  // Links Oben
   tft.setTextColor(YELLOW);  //-
   tft.setFreeFont(&FreeSansBold9pt7b);
   tft.setTextSize(2);
-  //  if(G_currentBand == NUM_BANDS ){
-  //   tft.setTextColor(RED);
-  // }
-  //tft.print(band2string[G_currentBand]);
+  if(G_currentBand == NUM_BANDS ){
+   tft.setTextColor(RED);
+  }
+  tft.print(band2string[G_currentBand]);
   tft.fillRect(105, 80, 85, 55, BLACK);  //erase previous freq   vk3pe x,y,width,height,colour 10,40,137,40
   tft.drawRoundRect(105, 80, 85, 55, 5, WHITE);
   tft.setTextSize(1);
   tft.setCursor(115, 100);
   tft.setTextColor(YELLOW);
-  // if(G_Split == 1){
-  //   tft.print("RX");
-  // }else{
-  tft.print("TX & RX");
-  //}
+  if(is_SPLIT == 1){
+     tft.print("RX");
+  }else{
+     tft.print("TX & RX");
+  }
 
   tft.setCursor(115, 125);
   tft.print("");
 }
-
+//------------------------------------------------------------------
+//    Show frequency in 'kHz' and band in 'Meters' text on TFT vk3pe
+//------------------------------------------------------------------
+void setTimeString(String utc_time) {
+  
+  tft.setFreeFont(NULL);  // Set font to GLCD
+  tft.fillRect(330, 1, 140, 25, BLACK);
+  tft.setTextColor(WHITE);
+  tft.setTextSize(2);
+  tft.setCursor(330, 7);
+  tft.print("UTC: ");
+   tft.setCursor(375, 7);
+  tft.print(utc_time);
+}
 void drawButton() {  // Erstelle Touch Buttons mit Label
   int buttonCount = sizeof(buttonX) / sizeof(buttonX[0]);
   for (int i = 0; i < buttonCount; i++) {
