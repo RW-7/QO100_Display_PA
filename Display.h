@@ -31,9 +31,7 @@ void Draw_TX() {
   tft.print("TX");
 }
 
-void set_LCD_Curennt_RX(unsigned long frequency) {  // Links Oben
-
-
+void set_LCD_Curennt_RX() {  // Links Oben
   //freq_kHz = G_frequency / 1000;       // frequency is now in kHz
   // G_currentBand = get_Band(freq_kHz);  // get band according the current frequency
 
@@ -47,7 +45,7 @@ void set_LCD_Curennt_RX(unsigned long frequency) {  // Links Oben
   tft.setTextSize(2);
   tft.setCursor(5, 67);
   // mod by DL1BZ
-  tft.print(0.000001 * frequency, 5);   //show Frequency in MHz with 5 decimal digits
+  tft.print(0.000001 * G_frequency, 5);   //show Frequency in MHz with 5 decimal digits
                                         // tft.println("M"); // add W for display TXPWR value
   tft.setCursor(5, 120);                //-
   tft.fillRect(0, 80, 105, 55, BLACK);  //-erase   x,y,width, height
@@ -159,7 +157,7 @@ void init_TFT(void) {
   // Header
   tft.drawRoundRect(0, 0, tft.width(), 30, 5, WHITE);  //with white border.
   Draw_RX();                                           // RX Button
-  set_LCD_Curennt_RX(0);                               // Frequenzanzeige links oben
+  set_LCD_Curennt_RX();                               // Frequenzanzeige links oben
   drawButton();                                        // Touch Buttons mit Label
   tft.setTouch(calData);
 

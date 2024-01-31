@@ -10,6 +10,7 @@
 #include <PubSubClient.h>
 #include <NTPClient.h>
 #include <WiFiUdp.h>
+//#include "FrequencyDigits.h"
 
 //-------------------------------------------------------------------------------
 // create the civ and ICradio objects in use
@@ -39,17 +40,36 @@ void set_Frequenz(unsigned long frequency) {
   unsigned long freq_kHz;
   freq_kHz = frequency / 1000;       // frequency is now in kHz
   G_currentBand = get_Band(freq_kHz);  // get band according the current frequency
-  set_LCD_Curennt_RX(frequency);
-  if(is_SPLIT == true){
-
+  G_frequency = frequency ;
+  set_LCD_Curennt_RX();
+  if(is_SPLIT == 1 ){
+    //TODO red subVFO
+  }else{
+    G_SPLIT_frequency = 0;
   }
-  
+  if(is_SAT == 1 && G_currentBand == SATRXBAND){
+    G_Dipslay_RX_frequency=G_frequency+OFFSET_Dipslay_RX;
+    if(is_SPLIT == 1){
+      G_SPLIT_frequency=G_frequency+OFFSET_SPLIT_RXTX;
+      G_Dipslay_TX_frequency=G_SPLIT_frequency+OFFSET_Dipslay_TX;
+    }
+  }else{
+    G_Dipslay_RX_frequency = 0;
+    G_Dipslay_TX_frequency = 0;
+  }
+
 #ifdef debug
   // Test-output to serial monitor:
   Serial.print("Frequency: ");
   Serial.print(freq_kHz);
   Serial.print("  Band: ");
-  Serial.print(currentBand);
+  Serial.print(G_currentBand);
+  Serial.print("  G_SPLIT_frequency LCD: ");
+  Serial.print(G_SPLIT_frequency);
+  Serial.print("  G_Dipslay_RX_frequency LCD: ");
+  Serial.print(G_Dipslay_RX_frequency);
+  Serial.print("  G_Dipslay_TX_frequency LCD: ");
+  Serial.print(G_Dipslay_TX_frequency);
   Serial.print("  Band LCD: ");
   Serial.println(band2string[G_currentBand]);
 #endif
@@ -241,6 +261,7 @@ void CIV_sendCmds() {
     civ.writeMsg(CIV_ADDR_705, CIV_C_VFO_DATA_READ, CIV_D_VFOA_READ, CIV_wFast);
     civ.writeMsg (CIV_ADDR_705, CIV_C_SPLIT_READ, CIV_D_NIX , CIV_wFast);
 }
+
 void setup_wifi() {
   delay(1000);
 

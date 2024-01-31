@@ -15,8 +15,12 @@
 // Timers
 #define BASELOOP_TICK 10
 #define NUM_BANDS 16 /* Number of Bands (depending on the radio) */
-// some general defines ----------------------------------
+#define SATRXBAND 2
 
+// some general defines ----------------------------------
+#define OFFSET_Dipslay_RX 10344977700
+#define OFFSET_Dipslay_TX 1967998900 
+#define OFFSET_SPLIT_RXTX 287478800
 
 
 //LCD Config

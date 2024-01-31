@@ -69,6 +69,7 @@ bool isShellySAT;
 
 bool is_RXTX = 0;
 bool is_SPLIT = 0;
+bool is_SAT = 1;
 bool LCD_Curennt_RX = 1;  // 0 == RX; 1 == TX on
 int G_Sat = 0;
 int G_Split = 0;
