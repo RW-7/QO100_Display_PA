@@ -1,6 +1,6 @@
 /* includes -----------------------------------------------------------------*/
 
-#include "a_defines.h"
+#include "defines.h"
 
 #include <CIVmaster.h>  // CIVcmds.h is automatically included in addition
 
