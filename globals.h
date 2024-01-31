@@ -5,7 +5,7 @@
 
 
 // tables for band selection and bittpattern calculation
-
+uint8_t currentBand = NUM_BANDS;  //
 // lower limits[kHz] of the bands:
 constexpr unsigned long lowlimits[NUM_BANDS] = {
   1791, 3491, 5291, 6991,  9991, 13991, 18051, 20991, 24881, 27991, 49991
@@ -27,4 +27,16 @@ enum onOff_t:uint8_t {
 	ON  = 1,
   NDEF
 };
+
+// get the bandnumber matching to the frequency (in kHz)
+
+byte get_Band(unsigned long frq){
+  byte i;
+  for (i=0; i<NUM_BANDS; i++) {
+    if ((frq >= lowlimits[i]) && (frq <= uplimits[i])){
+      return i;
+    }
+  }
+  return NUM_BANDS; // no valid band found -> return not defined
+}
 #endif //GLOBALS_H
