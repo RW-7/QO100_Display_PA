@@ -18,6 +18,8 @@
 
 
 //LCD Config
+//#define useTouch
+#define LCD
 #define screen_width  480       //placement of text etc must fit withing these boundaries.
 #define screen_heigth 320
 
