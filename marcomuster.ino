@@ -3,7 +3,7 @@
 #include "globals.h"
 #include "Display.h"
 #include "CIV_actions.h"
-
+#include "Touch.h"
 
 /* timer  variables */
 unsigned long time_current_baseloop;       // temporary time of the baseloop entry for calculations
@@ -41,7 +41,8 @@ void loop() {
     CIV_getProcessAnswers();
     // Dann Befehle an das Radio schreiben (falls möglich und erforderlich)
     CIV_sendCmds();
-    
+    // Touch abfrage
+    touchloop();
     if (touchcalibrate){
       touch_calibrate();
     }
