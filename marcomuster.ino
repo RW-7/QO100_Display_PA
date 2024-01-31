@@ -22,6 +22,7 @@ void setup() {
 #endif
   CIV_setup();
   init_TFT();
+  setup_wifi();
   time_current_baseloop = millis();
   time_last_baseloop = time_current_baseloop;
 }

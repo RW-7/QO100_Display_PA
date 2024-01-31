@@ -4,6 +4,13 @@
 #include "globals.h"
 #include <CIVmaster.h>  // CIVcmds.h is automatically included in addition
 #include "Display.h"
+#include <ArduinoJson.h>
+#include <WiFi.h>
+#include <HTTPClient.h>
+#include <PubSubClient.h>
+#include <NTPClient.h>
+#include <WiFiUdp.h>
+
 //-------------------------------------------------------------------------------
 // create the civ and ICradio objects in use
 
@@ -16,6 +23,11 @@ CIVresult_t CIVresultL;
 bool freqReceived = false;  // initially, no frequency info has been received from the radio
 uint8_t freqPoll = 0;       // number of initial frequency querys in addtion to the broadcast info
 uint16_t lpCnt = 0;
+
+WiFiUDP ntpUDP;
+NTPClient timeClient(ntpUDP, "pool.ntp.org");
+
+
 constexpr uint8_t CIV_C_VFO_DATA_READ[]  = {1,0x26};  
 constexpr uint8_t CIV_D_VFOA_READ[]  = {1,0x00}; 
 constexpr uint8_t CIV_D_VFOB_READ[]  = {1,0x01}; 
@@ -39,7 +51,80 @@ void set_PAbands(unsigned long frequency) {
   Serial.println(band2string[currentBand]);
 #endif
 }
+bool getShellyStatus(const char *url) {
+  // Überprüfen, ob die Verbindung zum WiFi besteht
+  if (WiFi.status() == WL_CONNECTED) {
+    // HTTP-Anfrage senden
+    HTTPClient http;
+    Serial.print("Senden einer HTTP-Anfrage an: ");
+    Serial.println(url);
 
+    http.begin(url);
+    int httpCode = http.GET();
+
+    if (httpCode > 0) {
+      // Antwort erhalten
+      String payload = http.getString();
+      Serial.println("Antwort erhalten!");
+      Serial.println(payload);
+
+      // JSON-Objekt erstellen und den Wert von "ison" extrahieren
+      DynamicJsonDocument doc(1024);
+      deserializeJson(doc, payload);
+
+      bool isOn = doc["ison"];
+      Serial.print("ISON-Status: ");
+      Serial.println(isOn);
+      return isOn;
+    } else {
+      Serial.print("Fehler beim Senden der Anfrage. HTTP-Fehlercode: ");
+      Serial.println(httpCode);
+      return false;
+    }
+
+    http.end();
+  }
+  return false;
+}
+bool setShellyStatus(const char *url,String paonoff) {
+// Überprüfen, ob die Verbindung zum WiFi besteht
+  if (WiFi.status() == WL_CONNECTED) {
+    // Daten für die POST-Anfrage vorbereiten
+    String postData = paonoff;//"turn=on";
+    String getData = String(url) + "?" + paonoff;
+    // HTTP-Anfrage senden
+    HTTPClient http;
+    Serial.print("Senden einer POST-Anfrage an: ");
+    Serial.println(getData);
+
+    http.begin(getData);
+    http.addHeader("Content-Type", "application/x-www-form-urlencoded");
+
+    int httpCode = http.GET();
+
+    if (httpCode > 0) {
+      // Antwort erhalten
+      String payload = http.getString();
+      Serial.println("Antwort erhalten!");
+      Serial.println(payload);
+      // JSON-Objekt erstellen und den Wert von "ison" extrahieren
+      DynamicJsonDocument doc(1024);
+      deserializeJson(doc, payload);
+
+      bool isOn = doc["ison"];
+      Serial.print("ISON-Status: ");
+      Serial.println(isOn);
+      return isOn;
+    } else {
+      Serial.print("Fehler beim Senden der Anfrage. HTTP-Fehlercode: ");
+      Serial.println(httpCode);
+      return false;
+    }
+
+    http.end();
+  }
+  return false;
+}
 //Antworten vom Radio
 void CIV_getProcessAnswers() {
   // ----------------------------------  check, whether there is something new from the radio
@@ -143,7 +228,30 @@ void CIV_sendCmds() {
     civ.writeMsg(CIV_ADDR_705, CIV_C_VFO_DATA_READ, CIV_D_VFOA_READ, CIV_wFast);
     civ.writeMsg (CIV_ADDR_705, CIV_C_SPLIT_READ, CIV_D_NIX , CIV_wFast);
 }
+void setup_wifi() {
+  delay(1000);
 
+  WiFi.mode(WIFI_STA);  //Optional
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+  Serial.println("\nConnecting");
+  int timeout_counter = 0;
+
+  while (WiFi.status() != WL_CONNECTED) {
+    Serial.print(".");
+    delay(200);
+    timeout_counter++;
+    if (timeout_counter >= CONNECTION_TIMEOUT * 5) {
+      // ESP.restart();
+      Serial.print("no WLAN connect...exit WiFi");
+      return;
+    }
+  }
+  timeClient.begin();
+  extern WiFiClient client;  // Deklaration der globalen Variable
+  Serial.println("\nConnected to the WiFi network");
+  Serial.print("Local ESP32 IP: ");
+  Serial.println(WiFi.localIP());
+}
 void CIV_setup() {
   civ.setupp(true);                // initialize the civ object/module (true means "use BT")
   civ.registerAddr(CIV_ADDR_705);  // tell civ, that this is a valid address to be used

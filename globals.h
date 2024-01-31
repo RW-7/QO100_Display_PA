@@ -16,6 +16,9 @@ const String buttonLabel[6] = {
   "SAT PA",  // 02
   "Menu"
 };
+const char* shellyHF_URL = "http://192.168.4.197/relay/0";
+const char* shellySAT_URL = "http://192.168.4.78/relay/0";
+
 //*************************************************************//*************************************************************
 // tables for band selection and bittpattern calculation
 uint8_t currentBand = NUM_BANDS;  //
@@ -53,6 +56,7 @@ bool ShellyHF;   // 0 == OFF; 1 == on
 bool ShellySAT;  // 2 == 2m Band RX;
 bool isShellyHF;
 bool isShellySAT;
+
 bool is_RXTX = 0;
 bool is_SPLIT = 0;
 bool LCD_Curennt_RX = 1;  // 0 == RX; 1 == TX on

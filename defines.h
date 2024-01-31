@@ -2,7 +2,9 @@
 #define defines_h
 
 #define VERSION_STRING "IC705toPA V0_1 22/05/04"
-
+#define WIFI_SSID       "EPPA"        // Your WiFi SSID
+#define WIFI_PASSWORD   "Samsung@16"    // Your WiFi Password
+#define CONNECTION_TIMEOUT 10
 // Global compile switches ===================================================================================
 
 // if defined debug messages on the serial line will be generated
