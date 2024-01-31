@@ -12,7 +12,7 @@
 #define debugBdRate 115200
 // Timers
 #define BASELOOP_TICK 10 
-#define NUM_BANDS 11   /* Number of Bands (depending on the radio) */
+#define NUM_BANDS 16   /* Number of Bands (depending on the radio) */
 // some general defines ----------------------------------
 
 

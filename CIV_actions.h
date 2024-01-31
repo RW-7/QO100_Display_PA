@@ -24,12 +24,12 @@ void set_PAbands(unsigned long frequency) {
 
   freq_kHz = frequency/1000;              // frequency is now in kHz
   currentBand = get_Band(freq_kHz);       // get band according the current frequency
-
+set_LCD_Curennt_RX(frequency);
 #ifdef debug
   // Test-output to serial monitor:
   Serial.print("Frequency: ");  Serial.print(freq_kHz);
   Serial.print("  Band: ");     Serial.print(currentBand);  
-  Serial.print("  BCD: ");      Serial.println(band2BCD[currentBand],BIN);  
+  Serial.print("  Band LCD: ");      Serial.println(band2string[currentBand]);  
 #endif
 
 
