@@ -178,15 +178,18 @@ void CIV_getProcessAnswers() {
           #ifdef debug
             Serial.print("CIV_C_VFO_DATA_READ 1:"); Serial.println(CIVresultL.datafield[1]);//Mode
           #endif
+          show_Mode();
         }
         if(VFOAModeData!=CIVresultL.datafield[2]){
           VFOAModeData=CIVresultL.datafield[2];
+          show_Mode();
           #ifdef debug
             Serial.print("CIV_C_VFO_DATA_READ 2:"); Serial.println(CIVresultL.datafield[2]);//Data
           #endif
         }
         if(VFOAFilter!=CIVresultL.datafield[3]){
           VFOAFilter=CIVresultL.datafield[3];
+          show_Mode();
           #ifdef debug
             Serial.print("CIV_C_VFO_DATA_READ 3:"); Serial.println(CIVresultL.datafield[3]); //Filter
           #endif

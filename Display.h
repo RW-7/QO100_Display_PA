@@ -30,6 +30,21 @@ void Draw_TX() {
   tft.setCursor(7, 7);
   tft.print("TX");
 }
+void show_Mode() {
+  
+  tft.setFreeFont(NULL);  // Set font to GLCD
+  tft.fillRect(225, 1, 90, 24, BLACK);  //erase previous freq   vk3pe x,y,width,height,colour 10,40,137,40
+  tft.setTextSize(2);
+  tft.setCursor(215, 7);
+  tft.setTextColor(YELLOW);
+  tft.print(modModeStr[VFOAMode]);
+  tft.setCursor(255, 7);
+  tft.print(DataStr[VFOAModeData]);
+  tft.setCursor(270, 7);
+  tft.print(FilStr[VFOAFilter]);
+
+
+}
 
 void set_LCD_Curennt_RX() {  // Links Oben
   //freq_kHz = G_frequency / 1000;       // frequency is now in kHz

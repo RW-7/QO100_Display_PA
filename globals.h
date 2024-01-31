@@ -49,7 +49,29 @@ constexpr unsigned long band2int[NUM_BANDS + 1] = {
   160, 80, 60, 40, 30, 20, 17, 15, 12, 10, 6, 2, 70, 23, 13, 3
   //"160", " 80", "60", "40", " 30m", " 20m", " 17m", " 15m", " 12m", " 10m", "  6m", "  2m", "70cm", " Out"
 };
-
+const String modModeStr[11] = {
+  "LSB   ", // 00 (00 .. 08 is according to ICOM's documentation) 
+  "USB   ", // 01
+  "AM    ", // 02
+  "CW    ", // 03
+  "RTTY  ", // 04
+  "FM    ", // 05
+  "WFM   ", // 06
+  "CW-R  ", // 07
+  "RTTY-R", // 08
+  "DV    ", // 09 (Note: on the ICOM CIV bus, this is coded as 17 in BCD-code, i.e. 0x17)
+  "NDEF  "  // 10
+};
+const String FilStr[4] = {
+  "NDEF",
+  "FIL1",   // 1 (1 .. 3 is according to ICOM's documentation)
+  "FIL2",
+  "FIL3"
+};
+const String DataStr[2] = {
+  "",
+  "-D"
+};
 
 
 
