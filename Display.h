@@ -5,6 +5,29 @@
 //-----------------------------------------------------------------------------------------
 //for TFT
 TFT_eSPI tft = TFT_eSPI();
+uint16_t calData[5] = { 263, 3632, 304, 3568, 1 };
+void Draw_RX() {
+ 
+  // RX Topline
+  tft.setFreeFont(NULL);  // Set default font
+  tft.setTextSize(2);
+ // tft.drawRoundRect(7, 2, 25, 20, 5, WHITE);  // X, Y, Breite, Höhe, abgerundete Ecken, Rahmenfarbe
+  tft.fillRect(1, 1, 40, 28, BLACK); 
+  tft.setTextColor(WHITE);
+  tft.setCursor(9, 7);
+  tft.print("RX");
+}
+void Draw_TX() {
+ 
+  //TX Topline
+  tft.setFreeFont(NULL);  // Set default font
+  tft.setTextSize(2);
+  //tft.drawRoundRect(7, 2, 25, 20, 5, RED);  // X, Y, Breite, Höhe, abgerundete Ecken, Rahmenfarbe
+  tft.fillRect(2, 1, 40, 28, BLACK); //debug setting background
+  tft.setTextColor(RED);
+  tft.setCursor(7, 7);
+  tft.print("TX");
+}
 
 void set_LCD_Curennt_RX(unsigned long frequency) { // Links Oben
 
@@ -47,6 +70,26 @@ void set_LCD_Curennt_RX(unsigned long frequency) { // Links Oben
   
   tft.setCursor(115, 125);
   tft.print("");
+}
+
+void drawButton() {  // Erstelle Touch Buttons mit Label 
+int buttonCount = sizeof(buttonX) / sizeof(buttonX[0]);
+  for (int i = 0; i < buttonCount; i++) {
+    tft.drawRoundRect(buttonX[i], buttonY, buttonWidth, buttonHeight, 5, WHITE);    //with white border.
+    tft.setFreeFont(NULL);
+    tft.setTextSize(2);
+    tft.setTextColor(GREEN);
+    tft.setCursor(buttonX[i] + 5, buttonY + 15);
+    tft.print(buttonLabel[i]);
+  }
+}
+
+void touch_button(int x, int y, const String label, uint16_t color){
+  tft.setFreeFont(NULL);
+  tft.setTextSize(2);
+  tft.setTextColor(color);
+  tft.setCursor(x + 5, y + 15);
+  tft.print(label);
 }
 void touch_calibrate()
 {
@@ -99,13 +142,13 @@ void init_TFT(void)
     tft.fillScreen(BLACK);
     tft.setRotation(3);
     //tft.fillRoundRect(0, 0, tft.width(), 30, 5, MAROON);   // background for screen title
+    // Header
     tft.drawRoundRect(0, 0, tft.width(), 30, 5, WHITE);    //with white border.
-    Draw_RX();
-    drawButton();
-    #ifdef useTouch
-     
+    Draw_RX(); // RX Button
+    set_LCD_Curennt_RX(0); // Frequenzanzeige links oben
+    drawButton(); // Touch Buttons mit Label 
     tft.setTouch(calData);
-    #endif
+
   #endif
 }
 #endif  // DISPLAY_H
